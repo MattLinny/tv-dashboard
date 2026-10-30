@@ -13,8 +13,9 @@
  * After editing this file later: Deploy → Manage deployments → edit (pencil) → Version: New version → Deploy.
  * The URL stays the same.
  *
- * Teams tab: one row per position. team, position, needed (how many people), lead_email (optional: that
- *   person also gets an email for each sign-up). Rows show in sheet order. Set needed to 0 to hide a position.
+ * Teams tab: one row per position. team, position, needed (how many blank tags to hang at first; there's no cap,
+ *   and every position always keeps one blank tag), lead_email (optional: that person also gets an email for each
+ *   sign-up). Rows show in sheet order. Set needed to 0 to hide a position.
  * Signups tab: every sign-up. Set status to "removed" (or delete the row) to free the spot.
  *
  * Privacy: the page only ever receives team, position, needed and each volunteer's first name + last initial.
@@ -137,16 +138,15 @@ function signup_(d) {
   if (!p) return { ok: false, error: 'not_found' };
   const taken = filledBy_()[key_(team, position)] || [];
   if (email && taken.some(s => s.email.toLowerCase() === email.toLowerCase())) return { ok: false, error: 'already' };
-  if (taken.length >= p.needed) return { ok: false, error: 'full' };
 
   const sh = sheet_(SIGNUPS);
   const rec = { submitted_at: new Date(), team, position, name, email, phone, notes, status: 'confirmed' };
   sh.appendRow(table_(sh).head.map(h => safe_(rec[h])));
 
-  const spot = team + ' · ' + position, left = p.needed - taken.length - 1;
+  const spot = team + ' · ' + position;
   if (isEmail_(email)) confirm_(email, name, team, position);
   notify_([p.lead], 'New volunteer · ' + spot + ' · ' + name, name + ' joined ' + spot, [
-    ['The spot', [['Team', team], ['Position', position], ['Filled', (taken.length + 1) + ' of ' + p.needed + (left ? ' · ' + left + ' still open' : ' · now full')]]],
+    ['The spot', [['Team', team], ['Position', position], ['Signed up', String(taken.length + 1)]]],
     ['Volunteer', [['Name', name], ['Email', email], ['Phone', phone], ['Notes', notes]]],
     ['To do', null, [
       'Get in touch with ' + name.split(/\s+/)[0] + ' this week and welcome them to the team.',
