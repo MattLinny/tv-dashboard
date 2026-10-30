@@ -18,10 +18,10 @@ if(TV&&Q.has('rotate')) document.documentElement.classList.add('rot');
 /* A blue cloth wall with paper tags hung on pegs. Blank tag = an open spot; a filled tag turns over to
    "I'm in!" with the name written in by hand. Each team also hangs one sketch card, and on the TV blank tags
    now and then turn over to show a sketch of the job.
-   Oceanside palette; rust only for the tape, the pins and the asterisk.
+   Oceanside palette; green for the tape and the pins.
    Display serif: Perfectly Nineties when it's installed on the machine, else Instrument Serif. */
 :root{
-  --blue:#3C7BEA; --ink-blue:#1A376B; --green:#34514A; --sky:#7FB2F0; --cream:#F3EFE6; --ink:#201F1F; --rust:#DB6246;
+  --blue:#3C7BEA; --ink-blue:#1A376B; --green:#34514A; --sky:#7FB2F0; --cream:#F3EFE6; --ink:#201F1F;
   --serif:'Perfectly Nineties','Instrument Serif',Georgia,serif;
   --sans:'Rethink Sans','Early Sans',system-ui,-apple-system,sans-serif;
   --hand:'Caveat','Bradley Hand',cursive;
@@ -37,12 +37,8 @@ h1,h2,p{margin:0}
 .serif{font-family:var(--serif);font-weight:400;letter-spacing:-.02em}
 .serif em{font-style:italic}
 
-/* ───────── Heading: big serif, a paper strip, a rust asterisk ───────── */
-.title{font-size:var(--t,96px);line-height:.8}
-.title span{display:block}
-.title span+span{padding-left:.42em}
-.ast{display:inline-block;width:.34em;height:.34em;margin-left:.06em;vertical-align:.52em;color:var(--rust)}
-.strip{display:inline-block;background:var(--paper);color:var(--ink-blue);font-weight:600;line-height:1.2;padding:.5em .8em .55em;rotate:-1.4deg;box-shadow:2px 4px 10px rgba(10,30,70,.25)}
+/* ───────── Heading: one plain serif line, sentence case ───────── */
+.title{font-size:var(--t,48px);line-height:1;color:var(--cream);text-wrap:balance}
 
 /* ───────── Tags hung on pegs. Sizes inside a tag are in cqw, so one tag design works at every size ───────── */
 .tags{display:grid;grid-template-columns:repeat(4,1fr);gap:2px 12px}
@@ -94,14 +90,13 @@ button.tag:active .front{filter:brightness(.94)}
 .c-green{--bg:var(--green);--line:var(--cream)}
 .c-blue{--bg:#2E66CC;--line:var(--cream)}
 .tag.peek .flip{transform:rotateY(180deg)}
-.pushpin{position:absolute;left:50%;top:calc(var(--hang) + 1px);width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:var(--rust);box-shadow:inset -2px -3px 0 rgba(0,0,0,.2),2px 4px 4px rgba(10,30,70,.4);z-index:3}
-.tape{position:absolute;left:50%;top:calc(var(--hang) - 14px);width:56cqw;height:16px;margin-left:-28cqw;background:rgba(219,98,70,.85);rotate:-5deg;z-index:3;
+.pushpin{position:absolute;left:50%;top:calc(var(--hang) + 1px);width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:var(--green);box-shadow:inset -2px -3px 0 rgba(0,0,0,.2),2px 4px 4px rgba(10,30,70,.4);z-index:3}
+.tape{position:absolute;left:50%;top:calc(var(--hang) - 14px);width:56cqw;height:16px;margin-left:-28cqw;background:rgba(52,81,74,.88);rotate:-5deg;z-index:3;
   clip-path:polygon(0 10%,5% 0,95% 0,100% 15%,96% 35%,100% 55%,96% 75%,100% 100%,4% 100%,0 80%,4% 60%,0 40%,4% 22%)}
 
 /* ───────── Phone page ───────── */
 .phone{max-width:640px;margin:0 auto;padding:calc(44px + env(safe-area-inset-top)) 18px calc(56px + env(safe-area-inset-bottom))}
-.phone .title{--t:clamp(78px,24vw,124px)}
-.phone .strip{font-size:16px;margin:22px 0 4px}
+.phone .title{--t:clamp(40px,11.5vw,56px);margin-bottom:8px}
 .team{margin-top:40px}
 .team h2{font-size:42px;line-height:1;margin-bottom:6px}
 .status{font-weight:600;font-size:16px;padding:40px 0}
@@ -143,8 +138,7 @@ html.tv,html.tv body{height:100%;overflow:hidden;cursor:none}
 html.tv .phone,html.tv dialog{display:none}
 html.tv .tvw{display:flex;flex-direction:column;width:1080px;padding:50px 52px 40px;transform-origin:0 0}
 .tv-head{display:flex;justify-content:space-between;align-items:flex-start;gap:30px}
-.tvw .title{--t:178px;margin-top:6px}
-.tvw .strip{font-size:25px;margin-top:22px}
+.tvw .title{--t:104px;margin-top:20px;max-width:700px}
 .qr{position:relative;flex:none;width:250px;margin:18px 6px 0 0;background:var(--paper);padding:20px 18px 16px;rotate:2deg;box-shadow:3px 8px 18px rgba(10,30,70,.35);color:var(--ink-blue);text-align:center}
 .qr .tape{--hang:0px;width:130px;margin-left:-65px;height:30px;top:-15px}
 .qr-code svg{display:block;width:214px;height:214px}
@@ -163,13 +157,8 @@ html.tv.rot body{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="ast" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="7" stroke-linecap="round"><path d="M20 4v32M6.1 12l27.8 16M6.1 28l27.8-16"/></g></symbol>
-</svg>
-
 <main class="phone">
-  <h1 class="title serif"><span>Serve</span><span>with <em>us.</em><svg class="ast" aria-hidden="true"><use href="#ast"/></svg></span></h1>
-  <p class="strip">Church feels different when you’re part of it.</p>
+  <h1 class="title serif">Church feels different when you’re part of it.</h1>
   <div id="list"><p class="status">Loading the teams…</p></div>
 </main>
 
@@ -180,8 +169,7 @@ html.tv.rot body{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-
 <div class="tvw" id="tv" aria-hidden="true">
   <div class="tv-head">
     <div>
-      <h1 class="title serif"><span>Serve</span><span>with <em>us.</em><svg class="ast"><use href="#ast"/></svg></span></h1>
-      <p class="strip">Church feels different when you’re part of it.</p>
+      <h1 class="title serif">Church feels different when you’re part of it.</h1>
     </div>
     <div class="qr"><span class="tape"></span><div class="qr-code" id="qr"></div><div class="qr-cta">Scan to join</div></div>
   </div>
@@ -198,8 +186,9 @@ const CONFIG = {
   tvRefreshSeconds: 15,   // TV
   // TV only: every so often a blank tag turns over to show a sketch, then turns back. Seconds between turns
   // (picked at random in this range), and how long the picture stays up.
-  peekEvery: [20, 45],
-  peekHold: 6,
+  peekEvery: [5, 12],
+  peekHold: 20,
+  peekMax: 3,
 };
 
 /* Sample data, shaped like the web app's answer: { teams:[{ team, positions:[{ position, needed, filled:[names] }] }] }
@@ -259,17 +248,20 @@ const POSITION_SKETCH={parking:'cone',coffee:'coffee',setup:'dolly',teardown:'do
 const TEAM_SKETCHES={logistics:['dolly','roadcase','cone','tools','ladder','radio','tape','trash'], worship:['stand','drums','mic','keys'],
   production:['headphones','laptop','light','mixer','tape'], chairs:['chair','dolly','ladder'], 'one80 kids':['kids','kidchairs','bible','cleaning'],
   welcome:['sign','coffee','cup','people','wave']};
+// The team's own card uses the original drawings (sketches/orig) and hangs somewhere inside the row.
+const TEAM_CARD={logistics:['trailer','coffee'], worship:['guitar'], production:['camera','headphones'], chairs:['chair'],
+  'one80 kids':['highfive'], welcome:['highfive','coffee']};
 const PAIRS=['c-mist','c-white','c-ink','c-cream','c-sand','c-blue','c-green'], HANGS=['peg','tape','pin'];
 const pair=key=>PAIRS[Math.floor(rand(key+'|c')*PAIRS.length)];
 const pool=t=>TEAM_SKETCHES[t.team.toLowerCase()]||['people','wave','coffee'];
-function sketchFor(t){ const l=pool(t); return l[Math.floor(rand(t.team+'|sketch')*l.length)]; }
+function sketchFor(t){ const l=TEAM_CARD[t.team.toLowerCase()]||['highfive']; return l[Math.floor(rand(t.team+'|sketch')*l.length)]; }
 function positionSketch(t,p,i){
   const k=p.position.toLowerCase(); const l=pool(t);
   return POSITION_SKETCH[t.team.toLowerCase()+'|'+k]||POSITION_SKETCH[k]||l[Math.floor(rand(`${t.team}|${k}|${i}`)*l.length)];
 }
 function decoHTML(name,key){
   const k={m:pair(key),hang:HANGS[Math.floor(rand(key+'|h')*3)]}, peg=k.hang==='peg';
-  return `<div class="tag deco ${k.m}${peg?'':' loose'}" style="${sway(key)};--img:url(sketches/${name}.webp)" aria-hidden="true">${peg?'<span class="peg"></span>':''}<span class="swing">${peg?STRING:''}
+  return `<div class="tag deco ${k.m}${peg?'':' loose'}" style="${sway(key)};--img:url(sketches/orig/${name}.webp)" aria-hidden="true">${peg?'<span class="peg"></span>':''}<span class="swing">${peg?STRING:''}
     <span class="shade"><i${peg?' class="shape"':''}></i></span><span class="solo${peg?' shape holed':''}"><i class="art"></i></span>
     ${k.hang==='tape'?'<span class="tape"></span>':''}${k.hang==='pin'?'<span class="pushpin"></span>':''}</span></div>`;
 }
@@ -281,10 +273,11 @@ function tags(t,ti,deco){
     if(TV) return tagHTML({word:p.position,key,art:positionSketch(t,p,i)});
     return tagHTML({word:p.position,key,tagName:'button',attrs:`type="button" data-t="${ti}" data-p="${pi}" aria-label="Join ${esc(t.team)}: ${esc(p.position)}"`});
   }));
-  // hang it right after the position it goes with (or at the end), never inside a run of the same position
+  // hang it between two positions inside the row, never first, last, or inside a run of the same position
   if(deco){
-    let at=list.length, n=0;
-    for(const p of t.positions){ n+=spots(p); if(positionSketch(t,p,0)===deco){ at=n; break; } }
+    const cuts=[]; let n=0;
+    for(const p of t.positions.slice(0,-1)){ n+=spots(p); cuts.push(n); }
+    const at=cuts.length?cuts[Math.floor(rand(t.team+'|at')*cuts.length)]:Math.min(1,list.length);
     list.splice(at,0,decoHTML(deco,t.team+'|deco'));
   }
   return `<div class="tags">${list.join('')}</div>`;
@@ -422,7 +415,7 @@ refresh(!LAST);
 setInterval(()=>refresh(false),(TV?CONFIG.tvRefreshSeconds:CONFIG.refreshSeconds)*1000);
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&!TV) refresh(false); });
 
-// Now and then a blank tag turns over to show its picture, then turns back: one at a time, at random,
+// Now and then a blank tag turns over to show its picture, then turns back: up to peekMax at once, at random,
 // never while a real sign-up is turning over.
 let lastPeek=null;
 function peekLater(){
@@ -430,7 +423,7 @@ function peekLater(){
   setTimeout(()=>{
     const busy=document.querySelector('#tvTeams .tag.just,#tvTeams .tag[data-just]');
     const blanks=[...document.querySelectorAll('#tvTeams .tag.blank:not(.peek)')].filter(el=>el!==lastPeek);
-    if(!busy&&blanks.length){
+    if(!busy&&blanks.length&&document.querySelectorAll('#tvTeams .tag.peek').length<CONFIG.peekMax){
       const el=blanks[Math.floor(Math.random()*blanks.length)]; lastPeek=el;
       el.classList.add('peek'); setTimeout(()=>el.classList.remove('peek'),CONFIG.peekHold*1000);
     }
