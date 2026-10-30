@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Serve at Oceanside</title>
+<meta name="theme-color" content="#3C7BEA">
+<script>
+// ?tv → portrait lobby screen; ?rotate when the screen is on its side but the computer isn't rotated
+const Q=new URLSearchParams(location.search), TV=Q.has('tv');
+if(TV) document.documentElement.classList.add('tv');
+if(TV&&Q.has('rotate')) document.documentElement.classList.add('rot');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rethink+Sans:wght@400..800&display=swap">
+<style>
+/* Oceanside palette. Signal on the TV (blue field), cream page on phones; rust once, on the QR call to action.
+   Display serif: Perfectly Nineties when it's installed on the machine, else Instrument Serif. */
+:root{
+  --blue:#3C7BEA; --ink-blue:#1A376B; --sky:#7FB2F0; --cream:#F3EFE6; --ink:#201F1F; --rust:#DB6246;
+  --muted:rgba(26,55,107,.6); --line:rgba(26,55,107,.12); --track:rgba(127,178,240,.35);
+  --serif:'Perfectly Nineties','Instrument Serif',Georgia,serif;
+  --sans:'Rethink Sans','Early Sans',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:var(--cream)}
+body{margin:0;font-family:var(--sans);color:var(--ink-blue);background:var(--cream) url(tex/paper.webp) 0 0/400px;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+h1,h2,p{margin:0}
+h1{text-wrap:balance}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-.015em}
+.serif em{font-style:italic}
+
+/* ───────── Phone page ───────── */
+.hero{background:var(--blue) url(tex/tv-blue.webp) 50% 30%/cover;color:var(--cream);padding:calc(40px + env(safe-area-inset-top)) 20px 34px}
+.hero h1{max-width:640px;margin:0 auto;font-size:clamp(56px,17vw,92px);line-height:.88}
+.wrap{max-width:680px;margin:0 auto;padding:22px 16px calc(40px + env(safe-area-inset-bottom))}
+.total{font-weight:500;font-size:17px}
+.total b{font-weight:800}
+.bar{height:8px;border-radius:99px;background:var(--track);margin:10px 0 22px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:inherit;background:var(--ink-blue);transition:width .8s cubic-bezier(.3,.9,.3,1)}
+.list{display:grid;gap:12px}
+.team{background:#fff;border-radius:22px;padding:20px 18px 6px}
+.team-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.team h2{font-size:38px;line-height:1}
+.left{flex:none;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.left.full{color:var(--ink-blue)}
+.segs{display:flex;gap:4px;margin:14px 0 4px}
+.segs i{flex:1;height:8px;border-radius:99px;background:var(--track);transition:background .4s}
+.segs i.on{background:var(--ink-blue)}
+.pos{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+.segs+.pos{border-top:0}
+.pos-txt{flex:1;min-width:0}
+.pos-name{font-weight:700;font-size:17px;color:var(--ink)}
+.pos-who{font-weight:500;font-size:14px;color:var(--muted);margin-top:2px}
+.pos-who:empty{display:none}
+.dots{display:flex;gap:4px;flex:none}
+.dots i{width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--sky)}
+.dots i.on{background:var(--ink-blue);box-shadow:none}
+.join{flex:none;border:0;border-radius:99px;padding:10px 18px;background:var(--blue);color:#fff;font-weight:800;font-size:15px;cursor:pointer;transition:scale .15s}
+.join:active{scale:.95}
+.join[disabled]{background:none;color:var(--muted);padding:10px 4px;cursor:default}
+.status{text-align:center;font-weight:500;font-size:15px;color:var(--muted);padding:30px 0}
+
+/* "Sign me up" sheet, after the printed sign-up card */
+dialog{border:0;padding:0;background:none;max-width:none;max-height:none;width:100%;margin:auto auto 0;color:var(--ink-blue)}
+dialog::backdrop{background:rgba(26,55,107,.5)}
+.sheet{background:var(--cream) url(tex/paper.webp) 0 0/400px;border-radius:26px 26px 0 0;padding:24px 20px calc(22px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+dialog[open] .sheet{animation:up .36s cubic-bezier(.2,1.1,.35,1)}
+dialog.out .sheet{animation:down .18s ease-in forwards}
+@keyframes up{from{translate:0 40px;opacity:0}}
+@keyframes down{to{translate:0 30px;opacity:0}}
+@media (min-width:640px){ dialog{margin:auto} .sheet{border-radius:26px} }
+.sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px}
+.sheet-head h2{font-weight:800;font-size:30px;line-height:1;letter-spacing:.01em;text-transform:uppercase}
+.spot{margin-top:8px;font-weight:600;font-size:16px;color:var(--blue)}
+.x{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:rgba(26,55,107,.08);font-size:22px;line-height:1;cursor:pointer}
+.field{display:block;margin-bottom:12px}
+.field>span{display:block;font-weight:800;font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:7px}
+.field em{font-style:normal;font-weight:600;letter-spacing:.06em;color:var(--muted)}
+.field input,.field textarea{width:100%;border:1.5px solid transparent;border-radius:12px;background:#fff;padding:13px 14px;font-weight:500;font-size:16px;color:var(--ink);outline:none;transition:border-color .15s}
+.field textarea{resize:none;height:72px}
+.field input:focus,.field textarea:focus{border-color:var(--blue)}
+.hp{position:absolute;left:-9999px}
+.go{width:100%;border:0;border-radius:99px;padding:17px;background:var(--ink-blue);color:var(--cream);font-weight:800;font-size:17px;letter-spacing:.08em;text-transform:uppercase;margin-top:8px;cursor:pointer;transition:scale .15s,opacity .2s}
+.go:active{scale:.98}
+.go[disabled]{opacity:.6}
+.err{color:#A8432C;font-weight:600;font-size:14px;margin-top:10px}
+.err:empty{display:none}
+.imin{background:var(--sky);border-radius:18px;aspect-ratio:1.6;display:grid;place-items:center;margin-bottom:20px;animation:card .6s cubic-bezier(.3,1.4,.5,1)}
+.imin b{font-weight:800;font-size:clamp(46px,15vw,72px);letter-spacing:-.01em;color:#fff;text-transform:uppercase}
+@keyframes card{from{scale:.85;rotate:-3deg;opacity:0}}
+.done h2{font-size:38px;line-height:1}
+.done p{font-weight:500;font-size:16px;line-height:1.45;margin:10px 0 18px}
+
+/* ───────── TV display ───────── */
+.tvw{display:none}
+html.tv,html.tv body{height:100%;overflow:hidden;cursor:none;background:var(--blue) url(tex/tv-blue.webp) center/cover no-repeat}
+html.tv .phone,html.tv dialog{display:none}
+html.tv .tvw{display:flex;flex-direction:column;width:1080px;padding:64px 52px 52px;transform-origin:0 0}
+.tv-head{display:flex;gap:40px;align-items:stretch;margin-bottom:40px}
+.tv-title{flex:1;display:flex;flex-direction:column;color:var(--cream)}
+.tv-title h1{font-size:150px;line-height:.84;margin-top:-6px}
+.tv-total{margin-top:auto;padding-top:30px;font-weight:600;font-size:34px}
+.tv-total b{font-weight:800}
+.tv-total .bar{height:14px;margin:14px 0 0;background:rgba(243,239,230,.28)}
+.tv-total .bar i{background:var(--cream)}
+.qr{flex:none;width:292px;background:var(--cream);border-radius:30px;padding:22px 22px 24px;display:flex;flex-direction:column;align-items:center}
+.qr-code svg{display:block;width:248px;height:248px}
+.qr-cta{margin-top:18px;background:var(--rust);color:var(--ink);font-weight:800;font-size:28px;padding:13px 28px;border-radius:99px}
+
+.tv-cols{flex:1;display:flex;gap:24px;min-height:0}
+.tv-col{flex:1;display:flex;flex-direction:column;gap:24px}
+.tcard{flex:1 1 auto;background:var(--cream) url(tex/paper.webp) 0 0/400px;border-radius:30px;padding:28px 28px 24px;display:flex;flex-direction:column}
+.tcard-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.tcard h2{font-size:66px;line-height:.9}
+.need{flex:none;font-weight:800;font-size:18px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.need b{font-size:34px;letter-spacing:0;margin-right:6px}
+.need.full{color:var(--cream);background:var(--ink-blue);padding:9px 16px;border-radius:99px}
+.tcard .segs{gap:6px;margin:16px 0 18px}
+.tcard .segs i{height:12px}
+.tposs{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:10px}
+.tpos{display:flex;gap:12px;align-items:flex-start}
+.tpos-name{flex:none;width:128px;font-weight:700;font-size:20px;line-height:1.15;padding-top:11px;color:var(--ink)}
+.slots{flex:1;display:flex;flex-wrap:wrap;gap:8px}
+.slot{flex:1 1 108px;max-width:calc(50% - 4px);height:46px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 12px}
+.slot.on{background:var(--ink-blue);color:var(--cream)}
+.slot.open{border:2.5px dashed var(--sky);color:var(--blue);font-weight:600}
+.slot.just{animation:pop 1.1s cubic-bezier(.3,1.5,.5,1) 0s 3;box-shadow:0 0 0 6px var(--sky)}
+@keyframes pop{0%,100%{scale:1}35%{scale:1.14}65%{scale:.97}}
+.tcard.just{animation:pop2 1.1s cubic-bezier(.3,1.5,.5,1) 0s 2}
+@keyframes pop2{0%,100%{scale:1}35%{scale:1.025}}
+html.tv.rot body{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:0 0;transform:rotate(90deg) translateY(-100%)}
+
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation:none!important;transition:none!important} }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <header class="hero"><h1 class="serif">Find your <em>place</em> on a team.</h1></header>
+  <div class="wrap">
+    <p class="total" id="total">&nbsp;</p>
+    <div class="bar"><i id="totalBar" style="width:0"></i></div>
+    <main class="list" id="list"><p class="status">Loading the teams…</p></main>
+  </div>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <div class="sheet" id="sheet"></div>
+</dialog>
+
+<div class="tvw" id="tv" aria-hidden="true">
+  <div class="tv-head">
+    <div class="tv-title">
+      <h1 class="serif">Find your <em>place</em> on a team.</h1>
+      <div class="tv-total"><p id="tvTotal"></p><div class="bar"><i id="tvBar" style="width:0"></i></div></div>
+    </div>
+    <div class="qr"><div class="qr-code" id="qr"></div><div class="qr-cta">Scan to join</div></div>
+  </div>
+  <div class="tv-cols" id="tvCols"></div>
+</div>
+
+<script>
+const CONFIG = {
+  // Google Apps Script web app (apps-script/Code.gs). Leave '' to show sample teams; sign-ups then only stay in this browser.
+  apiUrl: '',
+  // Where the TV's QR code sends people
+  joinLink: 'https://mattlinny.github.io/tv-dashboard/',
+  refreshSeconds: 60,     // phone page
+  tvRefreshSeconds: 15,   // TV
+};
+
+/* Sample data, shaped like the web app's answer: { teams:[{ team, positions:[{ position, needed, filled:[names] }] }] } */
+const SAMPLE = {teams:[
+  {team:'Logistics', positions:[{position:'Parking',needed:3,filled:['Tom R.','Dave T.']},{position:'Coffee',needed:2,filled:['Amy C.']},{position:'Signs & setup',needed:2,filled:[]}]},
+  {team:'Worship', positions:[{position:'Vocals',needed:2,filled:['Grace M.','Hannah L.']},{position:'Acoustic guitar',needed:1,filled:['Ben F.']},{position:'Electric guitar',needed:1,filled:[]},{position:'Drums',needed:1,filled:[]},{position:'Bass',needed:1,filled:['Josh M.']},{position:'Keys',needed:1,filled:[]}]},
+  {team:'Production', positions:[{position:'Cameras',needed:2,filled:['Noah S.']},{position:'Sound',needed:2,filled:['Chris D.','Sam W.']},{position:'Visuals',needed:2,filled:[]},{position:'Setup',needed:1,filled:[]}]},
+  {team:'Chairs', positions:[{position:'Setup',needed:4,filled:['Luke B.','Mike D.','Jacob P.']},{position:'Teardown',needed:3,filled:['Kate S.']}]},
+  {team:'ONE80 Kids', positions:[{position:'Nursery',needed:2,filled:['Priya N.']},{position:'Preschool',needed:2,filled:[]},{position:'Elementary',needed:2,filled:['Rachel K.','Emma W.']},{position:'Check-in',needed:1,filled:['Olivia B.']}]},
+  {team:'Welcome', positions:[{position:'Greeters',needed:3,filled:['Sarah K.','Jen O.']},{position:'Info table',needed:2,filled:[]},{position:'Ushers',needed:2,filled:['Mike D.']}]},
+]};
+
+/* ───────── Data ───────── */
+let TEAMS=[], failed=false;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const short=n=>{const w=String(n).trim().split(/\s+/);return w.length>1?`${w[0]} ${w.at(-1)[0].toUpperCase()}.`:w[0];};
+const count=t=>t.positions.reduce((a,p)=>(a.needed+=p.needed,a.filled+=Math.min(p.filled.length,p.needed),a),{needed:0,filled:0});
+
+async function loadTeams(){
+  if(!CONFIG.apiUrl) return structuredClone(SAMPLE.teams);
+  const r=await fetch(CONFIG.apiUrl,{cache:'no-store'});
+  if(!r.ok) throw new Error(r.status);
+  return (await r.json()).teams||[];
+}
+
+/* ───────── Phone page ───────── */
+function renderTotals(){
+  const all=TEAMS.reduce((a,t)=>{const c=count(t);a.needed+=c.needed;a.filled+=c.filled;return a},{needed:0,filled:0});
+  const open=all.needed-all.filled, pct=all.needed?all.filled/all.needed*100:0;
+  document.getElementById('total').innerHTML=all.needed?(open?`<b>${open} ${open===1?'spot':'spots'} open</b> across ${TEAMS.length} teams`:'<b>Every spot is filled.</b> Thank you.'):'&nbsp;';
+  document.getElementById('totalBar').style.width=pct+'%';
+  document.getElementById('tvTotal').innerHTML=`<b>${all.filled} of ${all.needed}</b> spots filled`;
+  document.getElementById('tvBar').style.width=pct+'%';
+}
+
+function segs(t){
+  return `<div class="segs">${t.positions.flatMap(p=>Array.from({length:p.needed},(_,i)=>`<i class="${i<p.filled.length?'on':''}"></i>`)).join('')}</div>`;
+}
+
+function renderPhone(){
+  const list=document.getElementById('list');
+  if(failed&&!TEAMS.length){ list.innerHTML='<p class="status">Couldn’t load the teams. Check your connection and try again.</p>'; return; }
+  list.innerHTML=TEAMS.map((t,ti)=>{
+    const c=count(t), open=c.needed-c.filled;
+    return `<section class="team">
+      <div class="team-head"><h2 class="serif">${esc(t.team)}</h2><span class="left${open?'':' full'}">${open?`${open} open`:'Full'}</span></div>
+      ${segs(t)}
+      ${t.positions.map((p,pi)=>{
+        const full=p.filled.length>=p.needed;
+        return `<div class="pos">
+          <div class="pos-txt"><div class="pos-name">${esc(p.position)}</div><div class="pos-who">${p.filled.map(esc).join(', ')}</div></div>
+          <div class="dots" aria-label="${p.filled.length} of ${p.needed} filled">${Array.from({length:p.needed},(_,i)=>`<i class="${i<p.filled.length?'on':''}"></i>`).join('')}</div>
+          <button class="join" type="button" data-t="${ti}" data-p="${pi}" ${full?'disabled':''}>${full?'Full':'Join'}</button>
+        </div>`;
+      }).join('')}
+    </section>`;
+  }).join('');
+}
+
+document.getElementById('list').addEventListener('click',e=>{
+  const b=e.target.closest('.join'); if(!b||b.disabled) return;
+  const t=TEAMS[b.dataset.t]; openForm(t,t.positions[b.dataset.p]);
+});
+
+/* ───────── Sign-up form ───────── */
+const dlg=document.getElementById('dlg'), sheet=document.getElementById('sheet');
+const touch=matchMedia('(pointer:coarse)').matches;
+function openForm(t,p){
+  sheet.innerHTML=`<div class="sheet-head">
+      <div><h2 id="dlgTitle">Sign me up</h2><p class="spot">${esc(t.team)} · ${esc(p.position)}</p></div>
+      <button class="x" type="button" aria-label="Close">&times;</button>
+    </div>
+    <form novalidate>
+      <label class="field"><span>Name</span><input name="name" autocomplete="name" required maxlength="80"></label>
+      <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120"></label>
+      <label class="field"><span>Phone <em>· optional</em></span><input name="phone" type="tel" autocomplete="tel" maxlength="40"></label>
+      <label class="field"><span>Notes <em>· optional</em></span><textarea name="notes" maxlength="400"></textarea></label>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="go" type="submit">I’m in</button>
+      <p class="err" role="alert"></p>
+    </form>`;
+  sheet.querySelector('.x').onclick=closeForm;
+  const form=sheet.querySelector('form'), err=sheet.querySelector('.err'), go=sheet.querySelector('.go');
+  form.onsubmit=async e=>{
+    e.preventDefault();
+    const d=Object.fromEntries(new FormData(form));
+    for(const k in d) d[k]=d[k].trim();
+    if(!d.name){ err.textContent='Add your name.'; return; }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)){ err.textContent='Add an email we can reach you at.'; return; }
+    err.textContent=''; go.disabled=true; go.textContent='Signing you up…';
+    try{
+      const res=await signup({action:'signup',team:t.team,position:p.position,...d});
+      if(res.ok){ done(d,t,p,res); refresh(false); return; }
+      err.textContent={full:'That spot just filled. Pick another one?',already:'You’re already signed up for this one.',missing:'Add your name and email.'}[res.error]||'Something went wrong. Please try again.';
+      if(res.error==='full') refresh(false);
+    }catch{ err.textContent='Couldn’t send that. Check your connection and try again.'; }
+    go.disabled=false; go.textContent='I’m in';
+  };
+  dlg.showModal();
+  if(!touch) form.elements.name.focus({preventScroll:true});
+}
+function done(d,t,p,res){
+  const first=d.name.split(/\s+/)[0];
+  sheet.innerHTML=`<div class="done">
+    <div class="imin" aria-hidden="true"><b>I’m in!</b></div>
+    <h2 class="serif" id="dlgTitle">Welcome to ${esc(t.team)}, ${esc(first)}.</h2>
+    <p>${res.receipt===false?'':`We’ve emailed the details to ${esc(d.email)}. `}Someone from the team will be in touch this week.</p>
+    <button class="go" type="button">Done</button>
+  </div>`;
+  sheet.querySelector('.go').onclick=closeForm;
+}
+function closeForm(){
+  if(!dlg.open) return;
+  dlg.classList.add('out');
+  setTimeout(()=>{ dlg.classList.remove('out'); dlg.close(); },170);
+}
+dlg.addEventListener('cancel',e=>{ e.preventDefault(); closeForm(); });
+dlg.addEventListener('click',e=>{ if(e.target===dlg) closeForm(); });
+
+async function signup(body){
+  if(!CONFIG.apiUrl){   // sample mode: the sign-up only lives in this browser
+    const p=SAMPLE.teams.find(t=>t.team===body.team).positions.find(x=>x.position===body.position);
+    if(p.filled.length>=p.needed) return {ok:false,error:'full'};
+    p.filled.push(short(body.name)); return {ok:true,receipt:false};
+  }
+  const r=await fetch(CONFIG.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+  return r.json();
+}
+
+/* ───────── TV ───────── */
+const SEEN=new Set(), JUST=new Set();   // every "team|position|name" seen so far, and the ones that just arrived
+const slotKey=(t,p,n)=>`${t.team}|${p.position}|${n}`;
+
+// Two columns in the sheet's order: split where the heights come closest to even.
+function columns(){
+  const w=TEAMS.map(t=>2+t.positions.reduce((a,p)=>a+Math.ceil(p.needed/2),0));
+  const total=w.reduce((a,b)=>a+b,0);
+  let best=1, diff=Infinity, sum=0;
+  for(let i=1;i<TEAMS.length;i++){ sum+=w[i-1]; const d=Math.abs(total-2*sum); if(d<diff){ diff=d; best=i; } }
+  return [TEAMS.slice(0,best),TEAMS.slice(best)];
+}
+
+function renderTV(){
+  document.getElementById('tvCols').innerHTML=columns().map(col=>`<div class="tv-col">${col.map(t=>{
+    const c=count(t), open=c.needed-c.filled, fresh=t.positions.some(p=>p.filled.some(n=>JUST.has(slotKey(t,p,n))));
+    return `<section class="tcard${fresh?' just':''}">
+      <div class="tcard-head"><h2 class="serif">${esc(t.team)}</h2>${open?`<div class="need"><b>${open}</b>open</div>`:'<div class="need full">Full</div>'}</div>
+      ${segs(t)}
+      <div class="tposs">${t.positions.map(p=>`<div class="tpos">
+        <div class="tpos-name">${esc(p.position)}</div>
+        <div class="slots">${Array.from({length:p.needed},(_,i)=>{const n=p.filled[i];
+          return n?`<span class="slot on${JUST.has(slotKey(t,p,n))?' just':''}">${esc(n)}</span>`:'<span class="slot open">Open</span>';}).join('')}</div>
+      </div>`).join('')}</div>
+    </section>`;}).join('')}</div>`).join('');
+  fitTV();
+  if(JUST.size) setTimeout(()=>document.querySelectorAll('#tv .just').forEach(el=>el.classList.remove('just')),4000);
+  JUST.clear();
+}
+
+// Lay out at 1080 wide and fill the screen's height; scale down only if the content runs taller.
+function fitTV(){
+  const tv=document.getElementById('tv'), rot=document.documentElement.classList.contains('rot');
+  const W=rot?innerHeight:innerWidth, H=rot?innerWidth:innerHeight, k0=W/1080;
+  tv.style.scale=''; tv.style.minHeight=(H/k0)+'px';
+  const k=Math.min(k0,H/tv.offsetHeight);
+  tv.style.scale=k.toFixed(4);
+  tv.style.marginLeft=((W-1080*k)/2)+'px';
+}
+
+/* ───────── Refresh ───────── */
+let LAST='';
+const CACHE_KEY='serve:teams';
+function render(){ renderTotals(); TV?renderTV():renderPhone(); }
+async function refresh(first){
+  try{ TEAMS=await loadTeams(); failed=false; }
+  catch{ failed=true; if(TEAMS.length) return; }
+  const data=JSON.stringify(TEAMS);
+  if(!first&&data===LAST) return;
+  for(const t of TEAMS) for(const p of t.positions) for(const n of p.filled){
+    const k=slotKey(t,p,n); if(LAST&&!SEEN.has(k)) JUST.add(k); SEEN.add(k);
+  }
+  LAST=data; render();
+  if(!failed&&CONFIG.apiUrl) try{ localStorage.setItem(CACHE_KEY,data); }catch{}
+}
+// The sheet's server takes 1–2 s to answer: draw the last answer this browser saw straight away, then swap in the fresh one.
+try{ const c=CONFIG.apiUrl&&JSON.parse(localStorage.getItem(CACHE_KEY)||'null'); if(Array.isArray(c)&&c.length){ TEAMS=c; LAST=JSON.stringify(c); c.forEach(t=>t.positions.forEach(p=>p.filled.forEach(n=>SEEN.add(slotKey(t,p,n))))); render(); } }catch{}
+refresh(!LAST);
+setInterval(()=>refresh(false),(TV?CONFIG.tvRefreshSeconds:CONFIG.refreshSeconds)*1000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&!TV) refresh(false); });
+
+if(TV){
+  addEventListener('resize',fitTV);
+  document.fonts&&document.fonts.ready.then(fitTV);
+  const sc=document.createElement('script'); sc.src='vendor/qrcode.js';
+  sc.onload=()=>{
+    const qr=qrcode(0,'M'); qr.addData(CONFIG.joinLink); qr.make();
+    const n=qr.getModuleCount(); let d='';
+    for(let r=0;r<n;r++) for(let c=0;c<n;c++) if(qr.isDark(r,c)) d+=`M${c} ${r}h1v1h-1z`;
+    document.getElementById('qr').innerHTML=`<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" role="img" aria-label="QR code"><path d="${d}" fill="#1A376B"/></svg>`;
+  };
+  document.head.append(sc);
+  // keep the screen on, and reload every few hours to pick up any changes to the page
+  const awake=()=>{ try{ navigator.wakeLock?.request('screen').catch(()=>{}); }catch{} };
+  awake(); document.addEventListener('visibilitychange',()=>{ if(!document.hidden) awake(); });
+  setTimeout(()=>location.reload(),6*3600*1000);
+}
+</script>
+</body>
+</html>
