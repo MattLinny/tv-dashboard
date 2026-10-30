@@ -82,11 +82,17 @@ button.tag:active .front{filter:brightness(.94)}
 .loose .shade{top:calc(var(--hang) - 6px)}
 .loose .swing{rotate:calc(var(--tilt,0deg) * 2)}
 .art{display:block;width:100%;height:100%;background:var(--line);-webkit-mask:var(--img) center/contain no-repeat;mask:var(--img) center/contain no-repeat}
-.pic{background:url(tex/paper.webp) 0 0/400px,var(--ink-blue);background-blend-mode:multiply;--line:var(--cream);padding:calc(var(--hole) + 9cqw) 12cqw 12cqw}
+.pic{padding:calc(var(--hole) + 9cqw) 12cqw 12cqw}
+/* Colour pairs for picture sides and sketch cards: a card colour and a line colour, printed on paper.
+   Pale tints stay clear of Sky, which only means "I'm in". */
+.pic,.deco .solo{background:url(tex/paper.webp) 0 0/400px,var(--bg);background-blend-mode:multiply}
+.c-mist{--bg:#D5DCE4;--line:var(--ink-blue)}
+.c-white{--bg:#FBFAF6;--line:var(--blue)}
+.c-ink{--bg:var(--ink-blue);--line:var(--cream)}
+.c-cream{--bg:var(--cream);--line:#5E95E6}
+.c-sand{--bg:#E6DAC2;--line:var(--ink-blue)}
+.c-blue{--bg:#2E66CC;--line:var(--cream)}
 .tag.peek .flip{transform:rotateY(180deg)}
-.m-cream .solo{background:var(--paper);--line:var(--ink-blue)}
-.m-ink .solo{background:url(tex/paper.webp) 0 0/400px,var(--ink-blue);background-blend-mode:multiply;--line:var(--cream)}
-.m-sky .solo{background:var(--sky) url(tex/sky.webp) var(--bx,0) var(--by,0)/360px 480px;--line:var(--ink-blue)}
 .pushpin{position:absolute;left:50%;top:calc(var(--hang) + 1px);width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:var(--rust);box-shadow:inset -2px -3px 0 rgba(0,0,0,.2),2px 4px 4px rgba(10,30,70,.4);z-index:3}
 .tape{position:absolute;left:50%;top:calc(var(--hang) - 14px);width:56cqw;height:16px;margin-left:-28cqw;background:rgba(219,98,70,.85);rotate:-5deg;z-index:3;
   clip-path:polygon(0 10%,5% 0,95% 0,100% 15%,96% 35%,100% 55%,96% 75%,100% 100%,4% 100%,0 80%,4% 60%,0 40%,4% 22%)}
@@ -233,7 +239,7 @@ function sway(key){
 // One tag: a peg, a string, a shadow, and two faces. Front = the position and an empty name line; back = "I'm in!" and the name.
 function tagHTML({word,name,key,on,art,tagName='div',attrs=''}){
   const back=name||!art?`<span class="face back shape holed"><b>I’m<br>in!</b><span class="line"><span class="hand${(name||'').length>7?' long':''}">${esc(name||'')}</span></span></span>`
-    :`<span class="face pic back shape holed"><i class="art" style="--img:url(sketches/${art}.webp)"></i></span>`;
+    :`<span class="face pic ${pair(key)} back shape holed"><i class="art" style="--img:url(sketches/${art}.webp)"></i></span>`;
   return `<${tagName} class="tag${on?' on':''}${name?'':' blank'}" style="${sway(key)}" ${attrs}><span class="peg"></span><span class="swing">${STRING}
     <span class="shade"><i class="shape"></i></span>
     <span class="flip">
@@ -252,7 +258,8 @@ const POSITION_SKETCH={parking:'cone',coffee:'coffee',setup:'dolly',teardown:'do
 const TEAM_SKETCHES={logistics:['dolly','roadcase','cone','tools','ladder','radio','tape','trash'], worship:['stand','drums','mic','keys'],
   production:['headphones','laptop','light','mixer','tape'], chairs:['chair','dolly','ladder'], 'one80 kids':['kids','kidchairs','bible','cleaning'],
   welcome:['sign','coffee','cup','people','wave']};
-const MATERIALS=['cream','ink'], HANGS=['peg','tape','pin'];   // no Sky: Sky means someone signed up
+const PAIRS=['c-mist','c-white','c-ink','c-cream','c-sand','c-blue'], HANGS=['peg','tape','pin'];
+const pair=key=>PAIRS[Math.floor(rand(key+'|c')*PAIRS.length)];
 const pool=t=>TEAM_SKETCHES[t.team.toLowerCase()]||['people','wave','coffee'];
 function sketchFor(t){ const l=pool(t); return l[Math.floor(rand(t.team+'|sketch')*l.length)]; }
 function positionSketch(t,p,i){
@@ -260,8 +267,8 @@ function positionSketch(t,p,i){
   return POSITION_SKETCH[t.team.toLowerCase()+'|'+k]||POSITION_SKETCH[k]||l[Math.floor(rand(`${t.team}|${k}|${i}`)*l.length)];
 }
 function decoHTML(name,key){
-  const k={m:MATERIALS[Math.floor(rand(key+'|m')*MATERIALS.length)],hang:HANGS[Math.floor(rand(key+'|h')*3)]}, peg=k.hang==='peg';
-  return `<div class="tag deco m-${k.m}${peg?'':' loose'}" style="${sway(key)};--img:url(sketches/${name}.webp)" aria-hidden="true">${peg?'<span class="peg"></span>':''}<span class="swing">${peg?STRING:''}
+  const k={m:pair(key),hang:HANGS[Math.floor(rand(key+'|h')*3)]}, peg=k.hang==='peg';
+  return `<div class="tag deco ${k.m}${peg?'':' loose'}" style="${sway(key)};--img:url(sketches/${name}.webp)" aria-hidden="true">${peg?'<span class="peg"></span>':''}<span class="swing">${peg?STRING:''}
     <span class="shade"><i${peg?' class="shape"':''}></i></span><span class="solo${peg?' shape holed':''}"><i class="art"></i></span>
     ${k.hang==='tape'?'<span class="tape"></span>':''}${k.hang==='pin'?'<span class="pushpin"></span>':''}</span></div>`;
 }
