@@ -249,8 +249,8 @@ const TEAM_SKETCHES={logistics:['dolly','roadcase','cone','tools','ladder','radi
   production:['headphones','laptop','light','mixer','tape'], chairs:['chair','dolly','ladder'], 'one80 kids':['kids','kidchairs','bible','cleaning'],
   welcome:['sign','coffee','cup','people','wave']};
 // The team's own card uses the original drawings (sketches/orig) and hangs somewhere inside the row.
-const TEAM_CARD={logistics:['trailer','coffee'], worship:['guitar'], production:['camera','headphones'], chairs:['chair'],
-  'one80 kids':['highfive'], welcome:['highfive','coffee']};
+const TEAM_CARD={logistics:['trailer'], worship:['guitar'], production:['camera','headphones'], chairs:['chair'],
+  'one80 kids':['highfive'], welcome:['highfive']};
 const PAIRS=['c-mist','c-white','c-ink','c-cream','c-sand','c-blue','c-green'], HANGS=['peg','tape','pin'];
 const pair=key=>PAIRS[Math.floor(rand(key+'|c')*PAIRS.length)];
 const pool=t=>TEAM_SKETCHES[t.team.toLowerCase()]||['people','wave','coffee'];
