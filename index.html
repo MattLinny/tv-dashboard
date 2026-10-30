@@ -228,7 +228,7 @@ function sway(key){
 // One tag: a peg, a string, a shadow, and two faces. Front = the position and an empty name line; back = "I'm in!" and the name.
 function tagHTML({word,name,key,on,art,tagName='div',attrs=''}){
   const back=name||!art?`<span class="face back shape holed"><b>I’m<br>in!</b><span class="line"><span class="hand${(name||'').length>7?' long':''}">${esc(name||'')}</span></span></span>`
-    :`<span class="face pic ${pair(key)} back shape holed"><i class="art" style="--img:url(sketches/${art}.webp)"></i></span>`;
+    :`<span class="face pic ${pair(key,art)} back shape holed"><i class="art" style="--img:url(sketches/${art}.webp)"></i></span>`;
   return `<${tagName} class="tag${on?' on':''}${name?'':' blank'}" style="${sway(key)}" ${attrs}><span class="peg"></span><span class="swing">${STRING}
     <span class="shade"><i class="shape"></i></span>
     <span class="flip">
@@ -251,7 +251,9 @@ const TEAM_SKETCHES={logistics:['dolly','roadcase','cone','tools','ladder','radi
 const TEAM_CARD={logistics:['trailer'], worship:['guitar'], production:['camera','headphones'], chairs:['chair'],
   'one80 kids':['highfive'], welcome:['coffee']};
 const PAIRS=['c-mist','c-white','c-cream','c-sand','c-blue','c-green'], HANGS=['peg','tape','pin'];
-const pair=key=>PAIRS[Math.floor(rand(key+'|c')*PAIRS.length)];
+// Drawings that only work as dark lines on a light card
+const LIGHT_ONLY=new Set(['chair']), LIGHT_PAIRS=['c-mist','c-white','c-cream','c-sand'];
+const pair=(key,art)=>{ const l=LIGHT_ONLY.has(art)?LIGHT_PAIRS:PAIRS; return l[Math.floor(rand(key+'|c')*l.length)]; };
 const pool=t=>TEAM_SKETCHES[t.team.toLowerCase()]||['people','wave','coffee'];
 function sketchFor(t){ const l=TEAM_CARD[t.team.toLowerCase()]||['highfive']; return l[Math.floor(rand(t.team+'|sketch')*l.length)]; }
 function positionSketch(t,p,i){
@@ -259,7 +261,7 @@ function positionSketch(t,p,i){
   return POSITION_SKETCH[t.team.toLowerCase()+'|'+k]||POSITION_SKETCH[k]||l[Math.floor(rand(`${t.team}|${k}|${i}`)*l.length)];
 }
 function decoHTML(name,key){
-  const k={m:pair(key),hang:HANGS[Math.floor(rand(key+'|h')*3)]}, peg=k.hang==='peg';
+  const k={m:pair(key,name),hang:HANGS[Math.floor(rand(key+'|h')*3)]}, peg=k.hang==='peg';
   return `<div class="tag deco ${k.m}${peg?'':' loose'}" style="${sway(key)};--img:url(sketches/orig/${name}.webp)" aria-hidden="true">${peg?'<span class="peg"></span>':''}<span class="swing">${peg?STRING:''}
     <span class="shade"><i${peg?' class="shape"':''}></i></span><span class="solo${peg?' shape holed':''}"><i class="art"></i></span>
     ${k.hang==='tape'?'<span class="tape"></span>':''}${k.hang==='pin'?'<span class="pushpin"></span>':''}</span></div>`;
