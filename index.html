@@ -82,13 +82,12 @@ button.tag:active .front{filter:brightness(.94)}
 /* Colour pairs for picture sides and sketch cards: a card colour and a line colour, printed on paper.
    Pale tints stay clear of Sky, which only means "I'm in". */
 .pic,.deco .solo{background:url(tex/paper.webp) 0 0/400px,var(--bg);background-blend-mode:multiply}
-.c-mist{--bg:#D5DCE4;--line:var(--ink-blue)}
-.c-white{--bg:#FBFAF6;--line:var(--blue)}
-.c-ink{--bg:var(--ink-blue);--line:var(--cream)}
-.c-cream{--bg:var(--cream);--line:#5E95E6}
-.c-sand{--bg:#E6DAC2;--line:var(--green)}
-.c-green{--bg:var(--green);--line:var(--cream)}
-.c-blue{--bg:#2E66CC;--line:var(--cream)}
+.c-mist{--bg:#A3C3D9;--line:var(--green)}
+.c-white{--bg:#FBFAF6;--line:#3E7CC0}
+.c-cream{--bg:#F8F3E3;--line:#79A7DB}
+.c-sand{--bg:#E8DFBF;--line:var(--green)}
+.c-green{--bg:#3B5249;--line:var(--cream)}
+.c-blue{--bg:#4A82B8;--line:#F7F4EC}
 .tag.peek .flip{transform:rotateY(180deg)}
 .pushpin{position:absolute;left:50%;top:calc(var(--hang) + 1px);width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:var(--green);box-shadow:inset -2px -3px 0 rgba(0,0,0,.2),2px 4px 4px rgba(10,30,70,.4);z-index:3}
 .tape{position:absolute;left:50%;top:calc(var(--hang) - 14px);width:56cqw;height:16px;margin-left:-28cqw;background:rgba(52,81,74,.88);rotate:-5deg;z-index:3;
@@ -251,7 +250,7 @@ const TEAM_SKETCHES={logistics:['dolly','roadcase','cone','tools','ladder','radi
 // The team's own card uses the original drawings (sketches/orig) and hangs somewhere inside the row.
 const TEAM_CARD={logistics:['trailer'], worship:['guitar'], production:['camera','headphones'], chairs:['chair'],
   'one80 kids':['highfive'], welcome:['coffee']};
-const PAIRS=['c-mist','c-white','c-ink','c-cream','c-sand','c-blue','c-green'], HANGS=['peg','tape','pin'];
+const PAIRS=['c-mist','c-white','c-cream','c-sand','c-blue','c-green'], HANGS=['peg','tape','pin'];
 const pair=key=>PAIRS[Math.floor(rand(key+'|c')*PAIRS.length)];
 const pool=t=>TEAM_SKETCHES[t.team.toLowerCase()]||['people','wave','coffee'];
 function sketchFor(t){ const l=TEAM_CARD[t.team.toLowerCase()]||['highfive']; return l[Math.floor(rand(t.team+'|sketch')*l.length)]; }
