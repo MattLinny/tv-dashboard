@@ -21,7 +21,7 @@ if(TV&&Q.has('rotate')) document.documentElement.classList.add('rot');
    Oceanside palette; rust only for the tape, the pins and the asterisk.
    Display serif: Perfectly Nineties when it's installed on the machine, else Instrument Serif. */
 :root{
-  --blue:#3C7BEA; --ink-blue:#1A376B; --sky:#7FB2F0; --cream:#F3EFE6; --ink:#201F1F; --rust:#DB6246;
+  --blue:#3C7BEA; --ink-blue:#1A376B; --green:#34514A; --sky:#7FB2F0; --cream:#F3EFE6; --ink:#201F1F; --rust:#DB6246;
   --serif:'Perfectly Nineties','Instrument Serif',Georgia,serif;
   --sans:'Rethink Sans','Early Sans',system-ui,-apple-system,sans-serif;
   --hand:'Caveat','Bradley Hand',cursive;
@@ -90,7 +90,8 @@ button.tag:active .front{filter:brightness(.94)}
 .c-white{--bg:#FBFAF6;--line:var(--blue)}
 .c-ink{--bg:var(--ink-blue);--line:var(--cream)}
 .c-cream{--bg:var(--cream);--line:#5E95E6}
-.c-sand{--bg:#E6DAC2;--line:var(--ink-blue)}
+.c-sand{--bg:#E6DAC2;--line:var(--green)}
+.c-green{--bg:var(--green);--line:var(--cream)}
 .c-blue{--bg:#2E66CC;--line:var(--cream)}
 .tag.peek .flip{transform:rotateY(180deg)}
 .pushpin{position:absolute;left:50%;top:calc(var(--hang) + 1px);width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:var(--rust);box-shadow:inset -2px -3px 0 rgba(0,0,0,.2),2px 4px 4px rgba(10,30,70,.4);z-index:3}
@@ -258,7 +259,7 @@ const POSITION_SKETCH={parking:'cone',coffee:'coffee',setup:'dolly',teardown:'do
 const TEAM_SKETCHES={logistics:['dolly','roadcase','cone','tools','ladder','radio','tape','trash'], worship:['stand','drums','mic','keys'],
   production:['headphones','laptop','light','mixer','tape'], chairs:['chair','dolly','ladder'], 'one80 kids':['kids','kidchairs','bible','cleaning'],
   welcome:['sign','coffee','cup','people','wave']};
-const PAIRS=['c-mist','c-white','c-ink','c-cream','c-sand','c-blue'], HANGS=['peg','tape','pin'];
+const PAIRS=['c-mist','c-white','c-ink','c-cream','c-sand','c-blue','c-green'], HANGS=['peg','tape','pin'];
 const pair=key=>PAIRS[Math.floor(rand(key+'|c')*PAIRS.length)];
 const pool=t=>TEAM_SKETCHES[t.team.toLowerCase()]||['people','wave','coffee'];
 function sketchFor(t){ const l=pool(t); return l[Math.floor(rand(t.team+'|sketch')*l.length)]; }
