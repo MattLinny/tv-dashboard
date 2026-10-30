@@ -29,15 +29,16 @@ const GONE = ['removed', 'cancelled', 'canceled', 'hidden', 'no'];
 
 const CHURCH = 'Oceanside Church';
 
-// Starting teams. Edit them in the sheet afterwards; this only fills an empty Teams tab.
+// Starting teams. Each spot shows as its own card, so keep positions to one short word.
+// Edit them in the sheet afterwards; this only fills an empty Teams tab.
 const START = [
-  ['Logistics', 'Parking', 3], ['Logistics', 'Coffee', 2], ['Logistics', 'Signs & setup', 2],
-  ['Worship', 'Vocals', 2], ['Worship', 'Acoustic guitar', 1], ['Worship', 'Electric guitar', 1],
+  ['Logistics', 'Parking', 3], ['Logistics', 'Coffee', 2], ['Logistics', 'Setup', 2],
+  ['Worship', 'Vocals', 2], ['Worship', 'Acoustic', 1], ['Worship', 'Electric', 1],
   ['Worship', 'Drums', 1], ['Worship', 'Bass', 1], ['Worship', 'Keys', 1],
-  ['Production', 'Cameras', 2], ['Production', 'Sound', 2], ['Production', 'Visuals', 2], ['Production', 'Setup', 1],
+  ['Production', 'Camera', 2], ['Production', 'Sound', 2], ['Production', 'Visuals', 2], ['Production', 'Setup', 1],
   ['Chairs', 'Setup', 4], ['Chairs', 'Teardown', 3],
   ['ONE80 Kids', 'Nursery', 2], ['ONE80 Kids', 'Preschool', 2], ['ONE80 Kids', 'Elementary', 2], ['ONE80 Kids', 'Check-in', 1],
-  ['Welcome', 'Greeters', 3], ['Welcome', 'Info table', 2], ['Welcome', 'Ushers', 2],
+  ['Welcome', 'Greeter', 3], ['Welcome', 'Info', 2], ['Welcome', 'Usher', 2],
 ];
 
 function setup() {

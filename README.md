@@ -3,7 +3,7 @@
 One page, two views. Edit `CONFIG` at the top of the script in `index.html`.
 
 - **Phone page** `https://mattlinny.github.io/tv-dashboard/`: every team and position with open spots. Tap **Join** → "Sign me up" → **I'm in**. The spot fills straight away.
-- **Lobby TV** `https://mattlinny.github.io/tv-dashboard/tv.html` (same as `/?tv`): portrait, full screen, a QR code to the phone page, every spot as a filled name or "Open". Checks the sheet every 15 s; new names pop.
+- **Lobby TV** `https://mattlinny.github.io/tv-dashboard/tv.html` (same as `/?tv`): portrait, full screen, a QR code to the phone page, one hanging card per spot. Filled spots turn over to "I'm in!" and a name. Checks the sheet every 15 s; new sign-ups flip live.
 
 ## Sheet
 `apps-script/Code.gs` turns a Google Sheet into the backend. Setup steps are at the top of that file. Then put the web app URL in `CONFIG.apiUrl`.

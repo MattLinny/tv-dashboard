@@ -19,9 +19,10 @@ if(TV&&Q.has('rotate')) document.documentElement.classList.add('rot');
    Display serif: Perfectly Nineties when it's installed on the machine, else Instrument Serif. */
 :root{
   --blue:#3C7BEA; --ink-blue:#1A376B; --sky:#7FB2F0; --cream:#F3EFE6; --ink:#201F1F; --rust:#DB6246;
-  --muted:rgba(26,55,107,.6); --line:rgba(26,55,107,.12); --track:rgba(127,178,240,.35);
+  --muted:rgba(26,55,107,.6); --track:rgba(127,178,240,.35);
   --serif:'Perfectly Nineties','Instrument Serif',Georgia,serif;
   --sans:'Rethink Sans','Early Sans',system-ui,-apple-system,sans-serif;
+  --flip:.9s cubic-bezier(.3,1.25,.5,1);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;background:var(--cream)}
@@ -32,35 +33,43 @@ h1{text-wrap:balance}
 .serif{font-family:var(--serif);font-weight:400;letter-spacing:-.015em}
 .serif em{font-style:italic}
 
+/* ───────── Spot cards: hung on a pin by a thin string. Position on the front, "I'm in!" and a name on the back ───────── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:4px 9px}
+.card{--hang:18px;position:relative;display:block;width:100%;height:124px;padding:0;border:0;background:none;text-align:left;perspective:1000px}
+.pin{position:absolute;left:50%;top:0;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:var(--ink-blue);box-shadow:inset -1.5px -1.5px 0 rgba(0,0,0,.25),1px 2px 2px rgba(10,30,70,.3);z-index:2}
+.swing{position:absolute;inset:4px 0 0;transform-origin:50% 0;rotate:var(--tilt,0deg);animation:sway 7s ease-in-out var(--d,0s) infinite alternate}
+@keyframes sway{from{rotate:calc(var(--tilt,0deg) - .8deg)}to{rotate:calc(var(--tilt,0deg) + .8deg)}}
+.string{position:absolute;left:24%;top:0;width:52%;height:calc(var(--hang) - 2px);overflow:visible}
+.string path{fill:none;stroke:rgba(26,55,107,.55);stroke-width:1.2}
+.flip{position:absolute;left:0;right:0;top:calc(var(--hang) - 4px);bottom:0;transform-style:preserve-3d;transition:transform var(--flip)}
+.card.on .flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:7px;display:flex;flex-direction:column;justify-content:space-between;padding:10px 9px 9px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 1px 0 rgba(26,55,107,.08),3px 8px 14px rgba(26,55,107,.16)}
+.front{background:#fff;color:var(--ink-blue)}
+.front .word{font-family:var(--serif);font-size:21px;line-height:.95;letter-spacing:-.02em}
+.front .word.long{font-size:16px}
+.meta{font-weight:700;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.back{background:var(--sky);transform:rotateY(180deg)}
+.back b{font-weight:800;font-size:19px;line-height:.95;letter-spacing:-.01em;text-transform:uppercase;color:#fff}
+.back .who{font-weight:700;font-size:12px;line-height:1.1;color:var(--ink-blue);overflow-wrap:anywhere}
+button.card{cursor:pointer}
+button.card .front{transition:scale .15s}
+button.card:active .front{scale:.95}
+.card.just .back{animation:glow 1.2s ease-out .8s 2}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(243,239,230,.9),3px 8px 14px rgba(26,55,107,.16)}100%{box-shadow:0 0 0 18px rgba(243,239,230,0),3px 8px 14px rgba(26,55,107,.16)}}
+
 /* ───────── Phone page ───────── */
 .hero{background:var(--blue) url(tex/tv-blue.webp) 50% 30%/cover;color:var(--cream);padding:calc(40px + env(safe-area-inset-top)) 20px 34px}
 .hero h1{max-width:640px;margin:0 auto;font-size:clamp(56px,17vw,92px);line-height:.88}
-.wrap{max-width:680px;margin:0 auto;padding:22px 16px calc(40px + env(safe-area-inset-bottom))}
+.wrap{max-width:680px;margin:0 auto;padding:22px 16px calc(48px + env(safe-area-inset-bottom))}
 .total{font-weight:500;font-size:17px}
 .total b{font-weight:800}
-.bar{height:8px;border-radius:99px;background:var(--track);margin:10px 0 22px;overflow:hidden}
+.bar{height:8px;border-radius:99px;background:var(--track);margin:10px 0 8px;overflow:hidden}
 .bar i{display:block;height:100%;border-radius:inherit;background:var(--ink-blue);transition:width .8s cubic-bezier(.3,.9,.3,1)}
-.list{display:grid;gap:12px}
-.team{background:#fff;border-radius:22px;padding:20px 18px 6px}
-.team-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.team h2{font-size:38px;line-height:1}
+.team{margin-top:30px}
+.team-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.team h2{font-size:40px;line-height:1}
 .left{flex:none;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
 .left.full{color:var(--ink-blue)}
-.segs{display:flex;gap:4px;margin:14px 0 4px}
-.segs i{flex:1;height:8px;border-radius:99px;background:var(--track);transition:background .4s}
-.segs i.on{background:var(--ink-blue)}
-.pos{display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
-.segs+.pos{border-top:0}
-.pos-txt{flex:1;min-width:0}
-.pos-name{font-weight:700;font-size:17px;color:var(--ink)}
-.pos-who{font-weight:500;font-size:14px;color:var(--muted);margin-top:2px}
-.pos-who:empty{display:none}
-.dots{display:flex;gap:4px;flex:none}
-.dots i{width:10px;height:10px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--sky)}
-.dots i.on{background:var(--ink-blue);box-shadow:none}
-.join{flex:none;border:0;border-radius:99px;padding:10px 18px;background:var(--blue);color:#fff;font-weight:800;font-size:15px;cursor:pointer;transition:scale .15s}
-.join:active{scale:.95}
-.join[disabled]{background:none;color:var(--muted);padding:10px 4px;cursor:default}
 .status{text-align:center;font-weight:500;font-size:15px;color:var(--muted);padding:30px 0}
 
 /* "Sign me up" sheet, after the printed sign-up card */
@@ -98,39 +107,34 @@ dialog.out .sheet{animation:down .18s ease-in forwards}
 .tvw{display:none}
 html.tv,html.tv body{height:100%;overflow:hidden;cursor:none;background:var(--blue) url(tex/tv-blue.webp) center/cover no-repeat}
 html.tv .phone,html.tv dialog{display:none}
-html.tv .tvw{display:flex;flex-direction:column;width:1080px;padding:64px 52px 52px;transform-origin:0 0}
-.tv-head{display:flex;gap:40px;align-items:stretch;margin-bottom:40px}
-.tv-title{flex:1;display:flex;flex-direction:column;color:var(--cream)}
-.tv-title h1{font-size:150px;line-height:.84;margin-top:-6px}
-.tv-total{margin-top:auto;padding-top:30px;font-weight:600;font-size:34px}
+html.tv .tvw{display:flex;flex-direction:column;width:1080px;padding:54px 52px 48px;transform-origin:0 0;color:var(--cream)}
+.tv-head{display:flex;gap:36px;align-items:stretch}
+.tv-title{flex:1;display:flex;flex-direction:column}
+.tv-title h1{font-size:112px;line-height:.86;margin-top:-4px}
+.tv-total{margin-top:auto;padding-top:26px;font-weight:600;font-size:34px}
 .tv-total b{font-weight:800}
 .tv-total .bar{height:14px;margin:14px 0 0;background:rgba(243,239,230,.28)}
 .tv-total .bar i{background:var(--cream)}
-.qr{flex:none;width:292px;background:var(--cream);border-radius:30px;padding:22px 22px 24px;display:flex;flex-direction:column;align-items:center}
-.qr-code svg{display:block;width:248px;height:248px}
-.qr-cta{margin-top:18px;background:var(--rust);color:var(--ink);font-weight:800;font-size:28px;padding:13px 28px;border-radius:99px}
+.qr{flex:none;width:262px;background:var(--cream);border-radius:28px;padding:20px 20px 22px;display:flex;flex-direction:column;align-items:center;color:var(--ink-blue)}
+.qr-code svg{display:block;width:222px;height:222px}
+.qr-cta{margin-top:16px;background:var(--rust);color:var(--ink);font-weight:800;font-size:26px;padding:12px 24px;border-radius:99px;white-space:nowrap}
 
-.tv-cols{flex:1;display:flex;gap:24px;min-height:0}
-.tv-col{flex:1;display:flex;flex-direction:column;gap:24px}
-.tcard{flex:1 1 auto;background:var(--cream) url(tex/paper.webp) 0 0/400px;border-radius:30px;padding:28px 28px 24px;display:flex;flex-direction:column}
-.tcard-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
-.tcard h2{font-size:66px;line-height:.9}
-.need{flex:none;font-weight:800;font-size:18px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.tv-teams{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:14px;padding-top:30px}
+.tv-team-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.tv-team-head h2{font-size:54px;line-height:.9}
+.need{font-weight:800;font-size:20px;letter-spacing:.12em;text-transform:uppercase}
 .need b{font-size:34px;letter-spacing:0;margin-right:6px}
-.need.full{color:var(--cream);background:var(--ink-blue);padding:9px 16px;border-radius:99px}
-.tcard .segs{gap:6px;margin:16px 0 18px}
-.tcard .segs i{height:12px}
-.tposs{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;gap:10px}
-.tpos{display:flex;gap:12px;align-items:flex-start}
-.tpos-name{flex:none;width:128px;font-weight:700;font-size:20px;line-height:1.15;padding-top:11px;color:var(--ink)}
-.slots{flex:1;display:flex;flex-wrap:wrap;gap:8px}
-.slot{flex:1 1 108px;max-width:calc(50% - 4px);height:46px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 12px}
-.slot.on{background:var(--ink-blue);color:var(--cream)}
-.slot.open{border:2.5px dashed var(--sky);color:var(--blue);font-weight:600}
-.slot.just{animation:pop 1.1s cubic-bezier(.3,1.5,.5,1) 0s 3;box-shadow:0 0 0 6px var(--sky)}
-@keyframes pop{0%,100%{scale:1}35%{scale:1.14}65%{scale:.97}}
-.tcard.just{animation:pop2 1.1s cubic-bezier(.3,1.5,.5,1) 0s 2}
-@keyframes pop2{0%,100%{scale:1}35%{scale:1.025}}
+.tvw .cards{grid-template-columns:repeat(7,1fr);gap:0 14px}
+.tvw .card{--hang:26px;height:164px}
+.tvw .pin{width:12px;height:12px;margin-left:-6px;background:var(--cream)}
+.tvw .string path{stroke:rgba(243,239,230,.75);stroke-width:1.6}
+.tvw .face{border-radius:9px;padding:14px 13px 12px;box-shadow:4px 12px 18px rgba(10,30,70,.32)}
+.tvw .front{background:var(--cream) url(tex/paper.webp) 0 0/400px}
+.tvw .front .word{font-size:31px}
+.tvw .front .word.long{font-size:23px}
+.tvw .meta{font-size:12px}
+.tvw .back b{font-size:29px}
+.tvw .back .who{font-size:19px}
 html.tv.rot body{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-origin:0 0;transform:rotate(90deg) translateY(-100%)}
 
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation:none!important;transition:none!important} }
@@ -143,7 +147,7 @@ html.tv.rot body{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-
   <div class="wrap">
     <p class="total" id="total">&nbsp;</p>
     <div class="bar"><i id="totalBar" style="width:0"></i></div>
-    <main class="list" id="list"><p class="status">Loading the teams…</p></main>
+    <main id="list"><p class="status">Loading the teams…</p></main>
   </div>
 </div>
 
@@ -159,7 +163,7 @@ html.tv.rot body{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-
     </div>
     <div class="qr"><div class="qr-code" id="qr"></div><div class="qr-cta">Scan to join</div></div>
   </div>
-  <div class="tv-cols" id="tvCols"></div>
+  <div class="tv-teams" id="tvTeams"></div>
 </div>
 
 <script>
@@ -172,14 +176,15 @@ const CONFIG = {
   tvRefreshSeconds: 15,   // TV
 };
 
-/* Sample data, shaped like the web app's answer: { teams:[{ team, positions:[{ position, needed, filled:[names] }] }] } */
+/* Sample data, shaped like the web app's answer: { teams:[{ team, positions:[{ position, needed, filled:[names] }] }] }
+   One card per spot, so positions read best as one word: Camera ×2 shows as [Camera] [Camera]. */
 const SAMPLE = {teams:[
-  {team:'Logistics', positions:[{position:'Parking',needed:3,filled:['Tom R.','Dave T.']},{position:'Coffee',needed:2,filled:['Amy C.']},{position:'Signs & setup',needed:2,filled:[]}]},
-  {team:'Worship', positions:[{position:'Vocals',needed:2,filled:['Grace M.','Hannah L.']},{position:'Acoustic guitar',needed:1,filled:['Ben F.']},{position:'Electric guitar',needed:1,filled:[]},{position:'Drums',needed:1,filled:[]},{position:'Bass',needed:1,filled:['Josh M.']},{position:'Keys',needed:1,filled:[]}]},
-  {team:'Production', positions:[{position:'Cameras',needed:2,filled:['Noah S.']},{position:'Sound',needed:2,filled:['Chris D.','Sam W.']},{position:'Visuals',needed:2,filled:[]},{position:'Setup',needed:1,filled:[]}]},
+  {team:'Logistics', positions:[{position:'Parking',needed:3,filled:['Tom R.','Dave T.']},{position:'Coffee',needed:2,filled:['Amy C.']},{position:'Setup',needed:2,filled:[]}]},
+  {team:'Worship', positions:[{position:'Vocals',needed:2,filled:['Grace M.','Hannah L.']},{position:'Acoustic',needed:1,filled:['Ben F.']},{position:'Electric',needed:1,filled:[]},{position:'Drums',needed:1,filled:[]},{position:'Bass',needed:1,filled:['Josh M.']},{position:'Keys',needed:1,filled:[]}]},
+  {team:'Production', positions:[{position:'Camera',needed:2,filled:['Noah S.']},{position:'Sound',needed:2,filled:['Chris D.','Sam W.']},{position:'Visuals',needed:2,filled:[]},{position:'Setup',needed:1,filled:[]}]},
   {team:'Chairs', positions:[{position:'Setup',needed:4,filled:['Luke B.','Mike D.','Jacob P.']},{position:'Teardown',needed:3,filled:['Kate S.']}]},
   {team:'ONE80 Kids', positions:[{position:'Nursery',needed:2,filled:['Priya N.']},{position:'Preschool',needed:2,filled:[]},{position:'Elementary',needed:2,filled:['Rachel K.','Emma W.']},{position:'Check-in',needed:1,filled:['Olivia B.']}]},
-  {team:'Welcome', positions:[{position:'Greeters',needed:3,filled:['Sarah K.','Jen O.']},{position:'Info table',needed:2,filled:[]},{position:'Ushers',needed:2,filled:['Mike D.']}]},
+  {team:'Welcome', positions:[{position:'Greeter',needed:3,filled:['Sarah K.','Jen O.']},{position:'Info',needed:2,filled:[]},{position:'Usher',needed:2,filled:['Mike D.']}]},
 ]};
 
 /* ───────── Data ───────── */
@@ -195,6 +200,32 @@ async function loadTeams(){
   return (await r.json()).teams||[];
 }
 
+/* ───────── Cards ───────── */
+const SEEN=new Set(), JUST=new Set();   // every "team|position|name" seen so far, and the ones that just arrived
+const slotKey=(t,p,n)=>`${t.team}|${p.position}|${n}`;
+
+// One card per spot, hung on its own pin with a slight tilt. A spot that just filled is drawn face up, then turns over.
+function hashTilt(s){ let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619); } return ((h>>>0)%1000)/1000; }
+function cards(t,ti){
+  return `<div class="cards">${t.positions.flatMap((p,pi)=>Array.from({length:p.needed},(_,i)=>{
+    const n=p.filled[i], just=n&&JUST.has(slotKey(t,p,n)), r=hashTilt(`${t.team}|${p.position}|${i}`);
+    const style=`--tilt:${(r*3.4-1.7).toFixed(2)}deg;--d:${(-r*7).toFixed(2)}s`;
+    const inner=`<span class="pin"></span><span class="swing"><svg class="string" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0L8 20M50 0L92 20" vector-effect="non-scaling-stroke"/></svg>
+      <span class="flip"><span class="face front"><span class="word${p.position.length>8?' long':''}">${esc(p.position)}</span><span class="meta">Open</span></span>
+      <span class="face back"><b>I’m<br>in!</b><span class="who">${esc(n||'')}</span></span></span></span>`;
+    if(n) return `<div class="card${just?' just':' on'}" style="${style}" role="img" aria-label="${esc(p.position)}: ${esc(n)}">${inner}</div>`;
+    return TV?`<div class="card" style="${style}">${inner}</div>`
+      :`<button class="card" type="button" style="${style}" data-t="${ti}" data-p="${pi}" aria-label="Join ${esc(t.team)} as ${esc(p.position)}">${inner}</button>`;
+  })).join('')}</div>`;
+}
+function flipJust(root){
+  if(!JUST.size) return;
+  JUST.clear();
+  void root.offsetWidth;   // lay out face up first so the turn animates
+  root.querySelectorAll('.card.just').forEach((el,i)=>setTimeout(()=>el.classList.add('on'),400+i*250));
+  setTimeout(()=>root.querySelectorAll('.card.just').forEach(el=>el.classList.remove('just')),6000);
+}
+
 /* ───────── Phone page ───────── */
 function renderTotals(){
   const all=TEAMS.reduce((a,t)=>{const c=count(t);a.needed+=c.needed;a.filled+=c.filled;return a},{needed:0,filled:0});
@@ -205,10 +236,6 @@ function renderTotals(){
   document.getElementById('tvBar').style.width=pct+'%';
 }
 
-function segs(t){
-  return `<div class="segs">${t.positions.flatMap(p=>Array.from({length:p.needed},(_,i)=>`<i class="${i<p.filled.length?'on':''}"></i>`)).join('')}</div>`;
-}
-
 function renderPhone(){
   const list=document.getElementById('list');
   if(failed&&!TEAMS.length){ list.innerHTML='<p class="status">Couldn’t load the teams. Check your connection and try again.</p>'; return; }
@@ -216,21 +243,14 @@ function renderPhone(){
     const c=count(t), open=c.needed-c.filled;
     return `<section class="team">
       <div class="team-head"><h2 class="serif">${esc(t.team)}</h2><span class="left${open?'':' full'}">${open?`${open} open`:'Full'}</span></div>
-      ${segs(t)}
-      ${t.positions.map((p,pi)=>{
-        const full=p.filled.length>=p.needed;
-        return `<div class="pos">
-          <div class="pos-txt"><div class="pos-name">${esc(p.position)}</div><div class="pos-who">${p.filled.map(esc).join(', ')}</div></div>
-          <div class="dots" aria-label="${p.filled.length} of ${p.needed} filled">${Array.from({length:p.needed},(_,i)=>`<i class="${i<p.filled.length?'on':''}"></i>`).join('')}</div>
-          <button class="join" type="button" data-t="${ti}" data-p="${pi}" ${full?'disabled':''}>${full?'Full':'Join'}</button>
-        </div>`;
-      }).join('')}
+      ${cards(t,ti)}
     </section>`;
   }).join('');
+  flipJust(list);
 }
 
 document.getElementById('list').addEventListener('click',e=>{
-  const b=e.target.closest('.join'); if(!b||b.disabled) return;
+  const b=e.target.closest('button.card'); if(!b) return;
   const t=TEAMS[b.dataset.t]; openForm(t,t.positions[b.dataset.p]);
 });
 
@@ -300,33 +320,17 @@ async function signup(body){
 }
 
 /* ───────── TV ───────── */
-const SEEN=new Set(), JUST=new Set();   // every "team|position|name" seen so far, and the ones that just arrived
-const slotKey=(t,p,n)=>`${t.team}|${p.position}|${n}`;
-
-// Two columns in the sheet's order: split where the heights come closest to even.
-function columns(){
-  const w=TEAMS.map(t=>2+t.positions.reduce((a,p)=>a+Math.ceil(p.needed/2),0));
-  const total=w.reduce((a,b)=>a+b,0);
-  let best=1, diff=Infinity, sum=0;
-  for(let i=1;i<TEAMS.length;i++){ sum+=w[i-1]; const d=Math.abs(total-2*sum); if(d<diff){ diff=d; best=i; } }
-  return [TEAMS.slice(0,best),TEAMS.slice(best)];
-}
-
 function renderTV(){
-  document.getElementById('tvCols').innerHTML=columns().map(col=>`<div class="tv-col">${col.map(t=>{
-    const c=count(t), open=c.needed-c.filled, fresh=t.positions.some(p=>p.filled.some(n=>JUST.has(slotKey(t,p,n))));
-    return `<section class="tcard${fresh?' just':''}">
-      <div class="tcard-head"><h2 class="serif">${esc(t.team)}</h2>${open?`<div class="need"><b>${open}</b>open</div>`:'<div class="need full">Full</div>'}</div>
-      ${segs(t)}
-      <div class="tposs">${t.positions.map(p=>`<div class="tpos">
-        <div class="tpos-name">${esc(p.position)}</div>
-        <div class="slots">${Array.from({length:p.needed},(_,i)=>{const n=p.filled[i];
-          return n?`<span class="slot on${JUST.has(slotKey(t,p,n))?' just':''}">${esc(n)}</span>`:'<span class="slot open">Open</span>';}).join('')}</div>
-      </div>`).join('')}</div>
-    </section>`;}).join('')}</div>`).join('');
+  const root=document.getElementById('tvTeams');
+  root.innerHTML=TEAMS.map(t=>{
+    const c=count(t), open=c.needed-c.filled;
+    return `<section>
+      <div class="tv-team-head"><h2 class="serif">${esc(t.team)}</h2><div class="need">${open?`<b>${open}</b>open`:'Full'}</div></div>
+      ${cards(t)}
+    </section>`;
+  }).join('');
   fitTV();
-  if(JUST.size) setTimeout(()=>document.querySelectorAll('#tv .just').forEach(el=>el.classList.remove('just')),4000);
-  JUST.clear();
+  flipJust(root);
 }
 
 // Lay out at 1080 wide and fill the screen's height; scale down only if the content runs taller.
