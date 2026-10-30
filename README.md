@@ -21,6 +21,6 @@ Without `apiUrl` the page shows sample teams and sign-ups only stay in that brow
 3. Chrome full screen (Cmd+Ctrl+F). Scan the QR once from a phone before the service.
 
 ## Look
-Blue cloth wall, cream paper tags, Sky card-stock backs, Ink Blue text; rust for the tape, the asterisk and one decorative card. A few decorative cards (asterisk, starburst, polaroid, handwritten note) fill the gaps at the ends of rows.
+Blue cloth wall, cream paper tags, Sky card-stock backs, Ink Blue text; rust for the tape, the pins and the asterisk. Each team hangs one sketch card next to the position it goes with (`sketches/`: chair, camera, headphones, guitar, coffee, trailer, high-five). They're line-art masks, so the lines take any brand colour; pairings are in `SKETCHES` / `TEAM_SKETCHES` in `index.html`.
 Type: Perfectly Nineties when it's installed on the computer showing the page, otherwise Instrument Serif (free, from Google Fonts) + Rethink Sans, with Caveat for handwritten names.
 Textures (`tex/`) are baked from Matt's scans: Blue Cardboard (book cloth) for the blue, Fine Paper (1) for the cream; the cloth again on Sky for the tag backs.

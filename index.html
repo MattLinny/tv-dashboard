@@ -16,8 +16,8 @@ if(TV&&Q.has('rotate')) document.documentElement.classList.add('rot');
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500..700&family=Instrument+Serif:ital@0;1&family=Rethink+Sans:wght@400..800&display=swap">
 <style>
 /* A blue cloth wall with paper tags hung on pegs. Blank tag = an open spot; a filled tag turns over to
-   "I'm in!" with the name written in by hand. A few decorative cards fill the gaps at the ends of rows.
-   Oceanside palette; rust for the tape, the asterisk and one decorative card.
+   "I'm in!" with the name written in by hand. Each team also hangs one sketch card that goes with it.
+   Oceanside palette; rust only for the tape, the pins and the asterisk.
    Display serif: Perfectly Nineties when it's installed on the machine, else Instrument Serif. */
 :root{
   --blue:#3C7BEA; --ink-blue:#1A376B; --sky:#7FB2F0; --cream:#F3EFE6; --ink:#201F1F; --rust:#DB6246;
@@ -74,21 +74,19 @@ button.tag:active .front{filter:brightness(.94)}
 .tag.just .swing{animation:sway 8s ease-in-out var(--d,0s) infinite alternate,nudge 1.4s cubic-bezier(.3,1.6,.5,1) .2s}
 @keyframes nudge{30%{translate:0 10px}}
 
-/* Decorative cards: same wall, different material */
-.solo{position:absolute;left:0;right:0;top:var(--hang);bottom:0;display:grid;place-items:center}
-.deco-ast .solo{background:url(tex/paper.webp) 0 0/400px,var(--rust);background-blend-mode:multiply;color:var(--cream)}
-.deco-ast .solo svg{width:62%;height:62%;margin-top:12cqw}
-.deco-burst .solo{background:url(tex/paper.webp) 0 0/400px,var(--ink-blue);background-blend-mode:multiply}
-.deco-burst .solo svg{width:78%;height:78%;margin-top:10cqw}
-.deco-note .swing{rotate:calc(var(--tilt,0deg) * 2.2)}
-.deco-note .solo{top:calc(var(--hang) - 8px);background:var(--paper);place-items:center start;padding:0 11cqw;font-family:var(--hand);font-weight:600;font-size:23cqw;line-height:.95;color:var(--ink-blue)}
-.deco-note .solo u{text-decoration:none;background:linear-gradient(transparent 78%,rgba(219,98,70,.55) 78%,rgba(219,98,70,.55) 92%,transparent 92%)}
-.pushpin{position:absolute;left:50%;top:calc(var(--hang) + 2px);width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:var(--rust);box-shadow:inset -2px -3px 0 rgba(0,0,0,.2),2px 4px 4px rgba(10,30,70,.4);z-index:3}
-.deco-photo .solo{top:calc(var(--hang) - 6px);bottom:9cqw;background:#FBFAF6;padding:9cqw 9cqw 26cqw;place-items:stretch}
-.deco-photo .solo svg{width:100%;height:100%;display:block}
+/* Sketch cards: a drawing that goes with the team, hung among its tags. Card colour and line colour vary;
+   the drawing is a mask, so its lines take any brand colour. */
+.solo{position:absolute;left:0;right:0;top:var(--hang);bottom:0;display:block;padding:calc(var(--hole) + 8cqw) 8cqw 9cqw}
+.loose .solo{top:calc(var(--hang) - 6px);padding:9cqw}
+.loose .shade{top:calc(var(--hang) - 6px)}
+.loose .swing{rotate:calc(var(--tilt,0deg) * 2)}
+.art{display:block;width:100%;height:100%;background:var(--line);-webkit-mask:var(--img) center/contain no-repeat;mask:var(--img) center/contain no-repeat}
+.m-cream .solo{background:var(--paper);--line:var(--ink-blue)}
+.m-ink .solo{background:url(tex/paper.webp) 0 0/400px,var(--ink-blue);background-blend-mode:multiply;--line:var(--cream)}
+.m-sky .solo{background:var(--sky) url(tex/sky.webp) var(--bx,0) var(--by,0)/360px 480px;--line:var(--ink-blue)}
+.pushpin{position:absolute;left:50%;top:calc(var(--hang) + 1px);width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:var(--rust);box-shadow:inset -2px -3px 0 rgba(0,0,0,.2),2px 4px 4px rgba(10,30,70,.4);z-index:3}
 .tape{position:absolute;left:50%;top:calc(var(--hang) - 14px);width:56cqw;height:16px;margin-left:-28cqw;background:rgba(219,98,70,.85);rotate:-5deg;z-index:3;
   clip-path:polygon(0 10%,5% 0,95% 0,100% 15%,96% 35%,100% 55%,96% 75%,100% 100%,4% 100%,0 80%,4% 60%,0 40%,4% 22%)}
-.deco-photo .shade,.deco-note .shade{top:calc(var(--hang) - 6px)}
 
 /* ───────── Phone page ───────── */
 .phone{max-width:640px;margin:0 auto;padding:calc(44px + env(safe-area-inset-top)) 18px calc(56px + env(safe-area-inset-bottom))}
@@ -157,13 +155,6 @@ html.tv.rot body{position:fixed;top:0;left:0;width:100vh;height:100vw;transform-
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="ast" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="7" stroke-linecap="round"><path d="M20 4v32M6.1 12l27.8 16M6.1 28l27.8-16"/></g></symbol>
-  <symbol id="burst" viewBox="0 0 100 100"><path fill="#F3EFE6" d="M50 2l6 30 20-23-8 29 28-12-22 21 30 3-30 6 24 18-29-8 12 28-21-22-3 30-6-30-18 24 8-29-28 12 22-21-30-3 30-6-24-18 29 8-12-28 21 22z"/></symbol>
-  <!-- a small illustrated scene for the polaroid: sky, sun, two hills of water -->
-  <symbol id="scene" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
-    <rect width="100" height="100" fill="#7FB2F0"/><circle cx="66" cy="44" r="17" fill="#F3EFE6"/>
-    <path d="M0 62c18-9 34-9 52 0s34 9 48 2v36H0z" fill="#3C7BEA"/><path d="M0 80c22-8 40-8 58 0s30 7 42 1v19H0z" fill="#1A376B"/>
-    <path d="M14 30c3-3 6-3 9 0M24 24c2-2 4-2 6 0" stroke="#1A376B" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  </symbol>
 </svg>
 
 <main class="phone">
@@ -242,24 +233,20 @@ function tagHTML({word,name,key,on,tagName='div',attrs=''}){
     </span></span></${tagName}>`;
 }
 
-// Decorative cards, one of each, hung in the gaps at the ends of rows.
-const DECOS=['ast','photo','burst','note'];
-function decoHTML(kind,key){
-  const shade=`<span class="shade"><i${kind==='ast'||kind==='burst'?' class="shape"':''}></i></span>`;
-  const body={
-    ast:`<span class="solo shape holed"><svg aria-hidden="true"><use href="#ast"/></svg></span>`,
-    burst:`<span class="solo shape holed"><svg aria-hidden="true"><use href="#burst"/></svg></span>`,
-    photo:`<span class="solo"><svg aria-hidden="true"><use href="#scene"/></svg></span>`,
-    note:`<span class="solo">See you <u>Sunday!</u></span>`,
-  }[kind];
-  const hang=kind==='ast'||kind==='burst';
-  return `<div class="tag deco deco-${kind}" style="${sway(key)}" aria-hidden="true">${hang?'<span class="peg"></span>':''}<span class="swing">${hang?STRING:''}${shade}${body}${kind==='photo'?'<span class="tape"></span>':''}${kind==='note'?'<span class="pushpin"></span>':''}</span></div>`;
-}
-// Which teams get a decorative card: those with room at the end of their last row, spread down the page, at most one each.
-function decoPlan(cols){
-  const plan={}; let k=0;
-  TEAMS.forEach(t=>{ if(k<DECOS.length&&tagCount(t)%cols) plan[t.team]=DECOS[k++]; });
-  return plan;
+// Sketch cards. Each team gets one drawing that goes with it, hung just after the position it belongs to.
+// m = card material (cream paper, Ink Blue or Sky card stock); hang = on a peg, taped up, or pinned.
+const SKETCHES={
+  chair:{m:'cream',hang:'tape'}, camera:{m:'ink',hang:'peg',after:'camera'}, headphones:{m:'sky',hang:'pin',after:'sound'},
+  guitar:{m:'cream',hang:'peg',after:'electric'}, coffee:{m:'sky',hang:'tape',after:'coffee'}, trailer:{m:'ink',hang:'tape',after:'setup'},
+  highfive:{m:'cream',hang:'pin',after:'greeter'},
+};
+const TEAM_SKETCHES={logistics:['coffee','trailer'], worship:['guitar'], production:['camera','headphones'], chairs:['chair'], welcome:['highfive']};
+function sketchFor(t){ const list=TEAM_SKETCHES[t.team.toLowerCase()]; return list&&list[Math.floor(rand(t.team+'|sketch')*list.length)]; }
+function decoHTML(name,key){
+  const k=SKETCHES[name], peg=k.hang==='peg';
+  return `<div class="tag deco m-${k.m}${peg?'':' loose'}" style="${sway(key)};--img:url(sketches/${name}.webp)" aria-hidden="true">${peg?'<span class="peg"></span>':''}<span class="swing">${peg?STRING:''}
+    <span class="shade"><i${peg?' class="shape"':''}></i></span><span class="solo${peg?' shape holed':''}"><i class="art"></i></span>
+    ${k.hang==='tape'?'<span class="tape"></span>':''}${k.hang==='pin'?'<span class="pushpin"></span>':''}</span></div>`;
 }
 
 function tags(t,ti,deco){
@@ -269,10 +256,11 @@ function tags(t,ti,deco){
     if(TV) return tagHTML({word:p.position,key});
     return tagHTML({word:p.position,key,tagName:'button',attrs:`type="button" data-t="${ti}" data-p="${pi}" aria-label="Join ${esc(t.team)}: ${esc(p.position)}"`});
   }));
-  // hang it between two positions (never inside a run of the same position), not always at the end
+  // hang it right after the position it goes with (or at the end), never inside a run of the same position
   if(deco){
-    const cuts=[]; let at=0; t.positions.forEach(p=>{ at+=spots(p); cuts.push(at); });
-    list.splice(cuts[Math.floor(rand(t.team)*cuts.length)],0,decoHTML(deco,t.team+'|deco'));
+    let at=list.length, n=0;
+    for(const p of t.positions){ n+=spots(p); if(p.position.toLowerCase()===SKETCHES[deco].after){ at=n; break; } }
+    list.splice(at,0,decoHTML(deco,t.team+'|deco'));
   }
   return `<div class="tags">${list.join('')}</div>`;
 }
@@ -289,8 +277,7 @@ function turnJust(root){
 function renderPhone(){
   const list=document.getElementById('list');
   if(failed&&!TEAMS.length){ list.innerHTML='<p class="status">Couldn’t load the teams. Check your connection and try again.</p>'; return; }
-  const plan=decoPlan(4);
-  list.innerHTML=TEAMS.map((t,ti)=>`<section class="team"><h2 class="serif">${esc(t.team)}</h2>${tags(t,ti,plan[t.team])}</section>`).join('');
+  list.innerHTML=TEAMS.map((t,ti)=>`<section class="team"><h2 class="serif">${esc(t.team)}</h2>${tags(t,ti,sketchFor(t))}</section>`).join('');
   turnJust(list);
 }
 
@@ -369,13 +356,12 @@ async function signup(body){
 }
 
 /* ───────── TV ───────── */
-// One row per team: as many columns as the busiest team needs (7 to 10), so tags shrink before rows wrap.
+// One row per team: as many columns as the busiest team needs, sketch included (7 to 10), so tags shrink before rows wrap.
 function renderTV(){
   const root=document.getElementById('tvTeams');
-  const cols=Math.min(10,Math.max(7,...TEAMS.map(tagCount)));
+  const cols=Math.min(10,Math.max(7,...TEAMS.map(t=>tagCount(t)+(sketchFor(t)?1:0))));
   root.style.setProperty('--cols',cols);
-  const plan=decoPlan(cols);
-  root.innerHTML=TEAMS.map(t=>`<section class="team"><h2 class="serif">${esc(t.team)}</h2>${tags(t,0,plan[t.team])}</section>`).join('');
+  root.innerHTML=TEAMS.map(t=>`<section class="team"><h2 class="serif">${esc(t.team)}</h2>${tags(t,0,sketchFor(t))}</section>`).join('');
   fitTV();
   turnJust(root);
 }
