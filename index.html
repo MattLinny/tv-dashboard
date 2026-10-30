@@ -16,7 +16,8 @@ if(TV&&Q.has('rotate')) document.documentElement.classList.add('rot');
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500..700&family=Instrument+Serif:ital@0;1&family=Rethink+Sans:wght@400..800&display=swap">
 <style>
 /* A blue cloth wall with paper tags hung on pegs. Blank tag = an open spot; a filled tag turns over to
-   "I'm in!" with the name written in by hand. Each team also hangs one sketch card that goes with it.
+   "I'm in!" with the name written in by hand. Each team also hangs one sketch card, and on the TV blank tags
+   now and then turn over to show a sketch of the job.
    Oceanside palette; rust only for the tape, the pins and the asterisk.
    Display serif: Perfectly Nineties when it's installed on the machine, else Instrument Serif. */
 :root{
@@ -81,6 +82,8 @@ button.tag:active .front{filter:brightness(.94)}
 .loose .shade{top:calc(var(--hang) - 6px)}
 .loose .swing{rotate:calc(var(--tilt,0deg) * 2)}
 .art{display:block;width:100%;height:100%;background:var(--line);-webkit-mask:var(--img) center/contain no-repeat;mask:var(--img) center/contain no-repeat}
+.pic{background:url(tex/paper.webp) 0 0/400px,var(--ink-blue);background-blend-mode:multiply;--line:var(--cream);padding:calc(var(--hole) + 9cqw) 12cqw 12cqw}
+.tag.peek .flip{transform:rotateY(180deg)}
 .m-cream .solo{background:var(--paper);--line:var(--ink-blue)}
 .m-ink .solo{background:url(tex/paper.webp) 0 0/400px,var(--ink-blue);background-blend-mode:multiply;--line:var(--cream)}
 .m-sky .solo{background:var(--sky) url(tex/sky.webp) var(--bx,0) var(--by,0)/360px 480px;--line:var(--ink-blue)}
@@ -186,6 +189,10 @@ const CONFIG = {
   joinLink: 'https://mattlinny.github.io/tv-dashboard/',
   refreshSeconds: 60,     // phone page
   tvRefreshSeconds: 15,   // TV
+  // TV only: every so often a blank tag turns over to show a sketch, then turns back. Seconds between turns
+  // (picked at random in this range), and how long the picture stays up.
+  peekEvery: [20, 45],
+  peekHold: 6,
 };
 
 /* Sample data, shaped like the web app's answer: { teams:[{ team, positions:[{ position, needed, filled:[names] }] }] }
@@ -224,26 +231,36 @@ function sway(key){
 }
 
 // One tag: a peg, a string, a shadow, and two faces. Front = the position and an empty name line; back = "I'm in!" and the name.
-function tagHTML({word,name,key,on,tagName='div',attrs=''}){
-  return `<${tagName} class="tag${on?' on':''}" style="${sway(key)}" ${attrs}><span class="peg"></span><span class="swing">${STRING}
+function tagHTML({word,name,key,on,art,tagName='div',attrs=''}){
+  const back=name||!art?`<span class="face back shape holed"><b>I’m<br>in!</b><span class="line"><span class="hand${(name||'').length>7?' long':''}">${esc(name||'')}</span></span></span>`
+    :`<span class="face pic back shape holed"><i class="art" style="--img:url(sketches/${art}.webp)"></i></span>`;
+  return `<${tagName} class="tag${on?' on':''}${name?'':' blank'}" style="${sway(key)}" ${attrs}><span class="peg"></span><span class="swing">${STRING}
     <span class="shade"><i class="shape"></i></span>
     <span class="flip">
       <span class="face front shape holed"><span class="word${word.length>8?' long':''}">${esc(word)}</span><span class="line"><small>Name</small></span></span>
-      <span class="face back shape holed"><b>I’m<br>in!</b><span class="line"><span class="hand${(name||'').length>7?' long':''}">${esc(name||'')}</span></span></span>
+      ${back}
     </span></span></${tagName}>`;
 }
 
-// Sketch cards. Each team gets one drawing that goes with it, hung just after the position it belongs to.
-// m = card material (cream paper, Ink Blue or Sky card stock); hang = on a peg, taped up, or pinned.
-const SKETCHES={
-  chair:{m:'cream',hang:'tape'}, camera:{m:'ink',hang:'peg',after:'camera'}, headphones:{m:'sky',hang:'pin',after:'sound'},
-  guitar:{m:'cream',hang:'peg',after:'electric'}, coffee:{m:'sky',hang:'tape',after:'coffee'}, trailer:{m:'ink',hang:'tape',after:'setup'},
-  highfive:{m:'cream',hang:'pin',after:'greeter'},
-};
-const TEAM_SKETCHES={logistics:['coffee','trailer'], worship:['guitar'], production:['camera','headphones'], chairs:['chair'], welcome:['highfive']};
-function sketchFor(t){ const list=TEAM_SKETCHES[t.team.toLowerCase()]; return list&&list[Math.floor(rand(t.team+'|sketch')*list.length)]; }
+// Sketches (sketches/*.webp, white line art used as a mask so the lines take any brand colour).
+// POSITION_SKETCH: the picture on the back of a blank tag (shown when it turns over on the TV).
+// TEAM_SKETCHES: the pool for the team's own sketch card and for positions not listed.
+const POSITION_SKETCH={parking:'cone',coffee:'coffee',setup:'dolly',teardown:'dolly',vocals:'mic',acoustic:'guitar',electric:'guitar',
+  drums:'drums',bass:'speaker',keys:'keys',camera:'camera',sound:'mixer',visuals:'projector',lights:'light',nursery:'kids',
+  preschool:'kids',elementary:'bible','check-in':'lanyard',greeter:'wave',info:'chat',usher:'people',cleaning:'cleaning',
+  'chairs|setup':'chair','chairs|teardown':'chair','production|setup':'cable','logistics|setup':'roadcase'};
+const TEAM_SKETCHES={logistics:['dolly','roadcase','cone','tools','ladder','radio','tape','trash'], worship:['stand','drums','mic','keys'],
+  production:['headphones','laptop','light','mixer','tape'], chairs:['chair','dolly','ladder'], 'one80 kids':['kids','kidchairs','bible','cleaning'],
+  welcome:['sign','coffee','cup','people','wave']};
+const MATERIALS=['cream','ink'], HANGS=['peg','tape','pin'];   // no Sky: Sky means someone signed up
+const pool=t=>TEAM_SKETCHES[t.team.toLowerCase()]||['people','wave','coffee'];
+function sketchFor(t){ const l=pool(t); return l[Math.floor(rand(t.team+'|sketch')*l.length)]; }
+function positionSketch(t,p,i){
+  const k=p.position.toLowerCase(); const l=pool(t);
+  return POSITION_SKETCH[t.team.toLowerCase()+'|'+k]||POSITION_SKETCH[k]||l[Math.floor(rand(`${t.team}|${k}|${i}`)*l.length)];
+}
 function decoHTML(name,key){
-  const k=SKETCHES[name], peg=k.hang==='peg';
+  const k={m:MATERIALS[Math.floor(rand(key+'|m')*MATERIALS.length)],hang:HANGS[Math.floor(rand(key+'|h')*3)]}, peg=k.hang==='peg';
   return `<div class="tag deco m-${k.m}${peg?'':' loose'}" style="${sway(key)};--img:url(sketches/${name}.webp)" aria-hidden="true">${peg?'<span class="peg"></span>':''}<span class="swing">${peg?STRING:''}
     <span class="shade"><i${peg?' class="shape"':''}></i></span><span class="solo${peg?' shape holed':''}"><i class="art"></i></span>
     ${k.hang==='tape'?'<span class="tape"></span>':''}${k.hang==='pin'?'<span class="pushpin"></span>':''}</span></div>`;
@@ -253,13 +270,13 @@ function tags(t,ti,deco){
   const list=t.positions.flatMap((p,pi)=>Array.from({length:spots(p)},(_,i)=>{
     const n=p.filled[i], key=`${t.team}|${p.position}|${i}`;
     if(n){ const just=JUST.has(slotKey(t,p,n)); return tagHTML({word:p.position,name:n,key,on:!just,attrs:`role="img" aria-label="${esc(p.position)}: ${esc(n)}"${just?' data-just':''}`}); }
-    if(TV) return tagHTML({word:p.position,key});
+    if(TV) return tagHTML({word:p.position,key,art:positionSketch(t,p,i)});
     return tagHTML({word:p.position,key,tagName:'button',attrs:`type="button" data-t="${ti}" data-p="${pi}" aria-label="Join ${esc(t.team)}: ${esc(p.position)}"`});
   }));
   // hang it right after the position it goes with (or at the end), never inside a run of the same position
   if(deco){
     let at=list.length, n=0;
-    for(const p of t.positions){ n+=spots(p); if(p.position.toLowerCase()===SKETCHES[deco].after){ at=n; break; } }
+    for(const p of t.positions){ n+=spots(p); if(positionSketch(t,p,0)===deco){ at=n; break; } }
     list.splice(at,0,decoHTML(deco,t.team+'|deco'));
   }
   return `<div class="tags">${list.join('')}</div>`;
@@ -397,7 +414,24 @@ refresh(!LAST);
 setInterval(()=>refresh(false),(TV?CONFIG.tvRefreshSeconds:CONFIG.refreshSeconds)*1000);
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&!TV) refresh(false); });
 
+// Now and then a blank tag turns over to show its picture, then turns back: one at a time, at random,
+// never while a real sign-up is turning over.
+let lastPeek=null;
+function peekLater(){
+  const [a,b]=CONFIG.peekEvery;
+  setTimeout(()=>{
+    const busy=document.querySelector('#tvTeams .tag.just,#tvTeams .tag[data-just]');
+    const blanks=[...document.querySelectorAll('#tvTeams .tag.blank:not(.peek)')].filter(el=>el!==lastPeek);
+    if(!busy&&blanks.length){
+      const el=blanks[Math.floor(Math.random()*blanks.length)]; lastPeek=el;
+      el.classList.add('peek'); setTimeout(()=>el.classList.remove('peek'),CONFIG.peekHold*1000);
+    }
+    peekLater();
+  },(a+Math.random()*(b-a))*1000);
+}
+
 if(TV){
+  peekLater();
   addEventListener('resize',fitTV);
   document.fonts&&document.fonts.ready.then(fitTV);
   const sc=document.createElement('script'); sc.src='vendor/qrcode.js';
