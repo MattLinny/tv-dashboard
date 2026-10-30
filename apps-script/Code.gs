@@ -180,7 +180,9 @@ function filledBy_() {
   rows.forEach(r => {
     const name = get(r, 'name');
     if (!name || GONE.includes(get(r, 'status').toLowerCase())) return;
-    (out[key_(get(r, 'team'), get(r, 'position'))] ||= []).push({ name, email: get(r, 'email') });
+    const k = key_(get(r, 'team'), get(r, 'position'));
+    if (!out[k]) out[k] = [];
+    out[k].push({ name, email: get(r, 'email') });
   });
   return out;
 }
